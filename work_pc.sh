@@ -1,12 +1,6 @@
 # change password
 sudo passwd $USER
 
-# installing Atom
-wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
-sudo apt-get update
-sudo apt-get install atom
-
 # installing Microsoft Teams Desktop
 sudo apt install -y curl
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
@@ -30,3 +24,8 @@ sudo apt install -y terminator
 
 # create an SSH key
 echo -e "\n"|ssh-keygen -t rsa -N ""
+
+# c++ stuff
+
+sudo apt install -y g++
+sudo apt install build-essential
