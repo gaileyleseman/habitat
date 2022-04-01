@@ -1,14 +1,16 @@
 # source functions
 source ./functions.sh
 
-# settings
-git_upload_ssh_key
+# install software via apt
+install_basic_pkgs
+sudo apt install -y terminator
 
 # install software via debians
 install_spotify
+install_github_cli
 
-# install software via apt
-sudo apt install -y terminator
+# settings
+github_ssh_key
 
 
 
