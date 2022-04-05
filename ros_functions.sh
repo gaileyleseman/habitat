@@ -1,5 +1,5 @@
 
-function ros2_galactic(){
+function install_ros2_galactic(){
 	apt-cache policy | grep universe
 	sudo apt install software-properties-common0
 	sudo add-apt-repository universe
@@ -10,7 +10,7 @@ function ros2_galactic(){
 	sudo apt install ros-galactic-desktop
 }
 
-function moveit2(){
+function install_moveit2(){
 	source /opt/ros/galactic/setup.bash
 	sudo apt install python3-rosdep
 	sudo rosdep init

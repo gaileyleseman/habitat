@@ -3,6 +3,7 @@
 #---------------------------------------------------------------------------------------------------#
 function install_basic_pkgs(){
     sudo apt install -y curl
+    sudo apt install -y terminator
 }
 
 
