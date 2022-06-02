@@ -2,8 +2,9 @@
 # Software via APT
 #---------------------------------------------------------------------------------------------------#
 function install_basic_pkgs(){
-    sudo apt install -y curl
-    sudo apt install -y terminator
+    sudo apt-get install -y git
+    sudo apt-get install -y curl
+    sudo apt-get install -y terminator
 }
 
 
@@ -23,33 +24,56 @@ function install_spotify(){
 function install_github_cli(){
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    sudo apt update
-    sudo apt install -y gh
+    sudo apt-get update
+    sudo apt-get install -y gh
 }
 
 # Microsoft Teams Desktop
 function install_teams(){
-    sudo apt install -y curl
     curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
     sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main" > /etc/apt/sources.list.d/teams.list'
-    sudo apt update
-    sudo apt install -y teams
+    sudo apt-get update
+    sudo apt-get install -y teams
 }
 
 # VS Code
 function install_vscode(){
-    sudo apt install software-properties-common apt-transport-https wget
-    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
     sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt update
-    sudo apt install -y code
+    sudo apt-get update
+    sudo apt-get install -y code
 }
 
 # Chrome
 function install_chrome(){
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    sudo apt update 
-    sudo apt install -y ./google-chrome-stable_current_amd64.deb
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
+    sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    sudo apt-get update
+    sudo apt-get install google-chrome-stable
+}
+
+# Docker 
+function install_docker {
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl gnupg lsb-release
+
+    # docker
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+    # post-installation steps
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+    newgrp docker 
+}
+
+function install_docker_script {
+    curl -s https://get.docker.com | bash -s
 }
 
 
@@ -72,3 +96,34 @@ function github_ssh_key () {
     fi
     gh auth login -p ssh
 }
+
+
+#---------------------------------------------------------------------------------------------------#
+# Prime Vision
+#---------------------------------------------------------------------------------------------------#
+
+# Setting up SSH and Gitlab
+function pv_gitlab_ssh_key () {
+    # https://gitlab.cicd.primevisiononline.com/-/profile/keys
+    echo hoi 
+}
+
+
+# Downloading PV repositories 
+function pv_clone_repos () {
+    # robotics
+    mkdir ~/pv-robotics && cd ~/pv-robotics
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/cloud/services/floorplan-service.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/simulators/simulator-workspace.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/navigation.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/motion-planning-library.git
+
+    # documentation
+    mkdir documentation && cd documentation
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-setup.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-rollout.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robot-troubleshooting.git
+    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-maintenance.git
+    cd ~
+}
+
