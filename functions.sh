@@ -2,9 +2,11 @@
 # Software via APT
 #---------------------------------------------------------------------------------------------------#
 function install_basic_pkgs(){
-    sudo apt-get install -y git
-    sudo apt-get install -y curl
-    sudo apt-get install -y terminator
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y \
+    git \
+    curl \
+    terminator
 }
 
 
@@ -28,20 +30,13 @@ function install_github_cli(){
     sudo apt-get install -y gh
 }
 
-# Microsoft Teams Desktop
-function install_teams(){
-    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main" > /etc/apt/sources.list.d/teams.list'
-    sudo apt-get update
-    sudo apt-get install -y teams
-}
-
 # VS Code
 function install_vscode(){
-    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt-get update
-    sudo apt-get install -y code
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/vscode.gpg > /dev/null
+    echo deb [arch=amd64 signed-by=/usr/share/keyrings/vscode.gpg] https://packages.microsoft.com/repos/vscode stable main | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y code
+    echo "installed VS Code"
 }
 
 # Chrome
@@ -97,33 +92,7 @@ function github_ssh_key () {
     gh auth login -p ssh
 }
 
-
-#---------------------------------------------------------------------------------------------------#
-# Prime Vision
-#---------------------------------------------------------------------------------------------------#
-
-# Setting up SSH and Gitlab
-function pv_gitlab_ssh_key () {
-    # https://gitlab.cicd.primevisiononline.com/-/profile/keys
-    echo hoi 
+function git_setup () {
+    git config --global user.email $GITHUB_EMAIL
+    git config --global user.name $NAME
 }
-
-
-# Downloading PV repositories 
-function pv_clone_repos () {
-    # robotics
-    mkdir ~/pv-robotics && cd ~/pv-robotics
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/cloud/services/floorplan-service.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/simulators/simulator-workspace.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/navigation.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/motion-planning-library.git
-
-    # documentation
-    mkdir documentation && cd documentation
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-setup.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-rollout.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robot-troubleshooting.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-maintenance.git
-    cd ~
-}
-
