@@ -7,27 +7,30 @@ function install_basic_pkgs(){
     git \
     curl \
     terminator
+    echo "installed packages through apt"
 }
 
 
 #---------------------------------------------------------------------------------------------------#
-# Software via Debian Packages
+# Other Software
 #---------------------------------------------------------------------------------------------------#
 
 # Spotify
 function install_spotify(){
-    curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
-    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    sudo apt-get update
-    sudo apt-get install -y spotify-client
+    curl -fsSL https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/spotify-archive-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/spotify-archive-keyring.gpg] http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y spotify-client
+    echo "installed Spotify"
 }
 
 # GitHub CLI
 function install_github_cli(){
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install -y gh
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y gh
+    echo "installed GitHub CLI"
 }
 
 # VS Code
@@ -41,10 +44,11 @@ function install_vscode(){
 
 # Chrome
 function install_chrome(){
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-    sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-    sudo apt-get update
-    sudo apt-get install google-chrome-stable
+    curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/googlechrome-keyring.gpg > /dev/null
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y google-chrome-stable
+    echo "installed Google Chrome"
 }
 
 # Docker 
