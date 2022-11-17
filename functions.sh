@@ -13,6 +13,12 @@ function install_basic_pkgs(){
     echo "installed packages through apt"
 }
 
+# sudo apt-get install python3.10-venv
+# sudo apt-get install python3-dev
+# libasound2-dev
+# libjack0
+# libjack-dev
+
 
 #---------------------------------------------------------------------------------------------------#
 # Other Software
