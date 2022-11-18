@@ -9,15 +9,15 @@ function install_basic_pkgs(){
     git \
     gnupg \
     lsb-release \
-    terminator
+    terminator \
+    zsh
     echo "installed packages through apt"
 }
 
 # sudo apt-get install python3.10-venv
 # sudo apt-get install python3-dev
-# libasound2-dev
-# libjack0
-# libjack-dev
+# sudo apt-get install python3-setuptools
+
 
 
 #---------------------------------------------------------------------------------------------------#
@@ -79,12 +79,42 @@ function install_docker {
     newgrp docker 
 }
 
+# Oh-my-zsh
+function install_ohmyzsh {
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+}
+
+#
+#source .profile
+
+
+# zsh-plugins
+# sudo -H pip3 install thefuck — user
+# cd ~/.oh-my-zsh/custom/plugins
+# git clone --depth 1 git@github.com:zsh-users/zsh-autosuggestions.git
+# git clone --depth 1 git@github.com:zsh-users/zsh-syntax-highlighting.
+
+# Themes
+# git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+# Set ZSH_THEME="powerlevel10k/powerlevel10k" in ~/.zshrc.
+
+
+# other prompt - Starship
+# mkdir -p ~/.local/share/fonts
+# git clone --depth 1 git@github.com:ryanoasis/nerd-fonts.git
+# ./nerd-fonts/install.sh FiraCode Meslo
+# curl -sS https://starship.rs/install.sh | sh
+# eval "$(starship init bash)"
+# eval "$(starship init zsh)"
+
+
+
 #---------------------------------------------------------------------------------------------------#
 # Settings
 #---------------------------------------------------------------------------------------------------#
 
 # Setting up SSH and Github
-function github_ssh_key () {
+function github_ssh_key {
     read -p "Enter GitHub e-mail: " GITHUB_EMAIL
     read -p "Enter name: " NAME
     echo "Using e-mail $GITHUB_EMAIL"
