@@ -39,7 +39,9 @@ function install_python(){
 function install_snap_pkgs(){
     sudo snap install \
     bitwarden \
+    bw \
     code \
+    insomnia \
     postman \
     spotify \
     echo "installed packages through snap"
