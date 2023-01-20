@@ -9,20 +9,56 @@ function install_basic_pkgs(){
     git \
     gnupg \
     lsb-release \
+    python3-pip \
+    python3-vcstool \
     terminator \
     zsh
     echo "installed packages through apt"
 }
 
-# sudo apt-get install python3.10-venv
+function install_python(){
+    # curl https://pyenv.run | bash
+
+    # sudo add-apt-repository ppa:deadsnakes/ppa \
+    # sudo apt-get update -qq
+    # sudo apt-get install -qq -y \
+    # python3.11 \
+    # python3.11-venv \
+    # echo "installed alternative python"
+}
+
 # sudo apt-get install python3-dev
 # sudo apt-get install python3-setuptools
 
-
+# apt install nvidia-cuda-toolkit
 
 #---------------------------------------------------------------------------------------------------#
-# Other Software
+# Software via Snap
 #---------------------------------------------------------------------------------------------------#
+
+function install_snap_pkgs(){
+    sudo snap install \
+    bitwarden \
+    code \
+    postman \
+    spotify \
+    echo "installed packages through snap"
+}
+
+
+function install_work_pkgs(){
+    sudo snap install \
+    teams-for-linux \
+    echo "installed work packages through snap"
+}
+
+#---------------------------------------------------------------------------------------------------#
+# Other Software Installations
+#---------------------------------------------------------------------------------------------------#
+
+function install_prep(){
+    sudo mkdir -p /etc/apt/keyrings
+}
 
 # Spotify
 function install_spotify(){
@@ -46,8 +82,8 @@ function install_github_cli(){
 
 # VS Code
 function install_vscode(){
-    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/vscode-archive-keyring.gpg > /dev/null
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/vscode-archive-keyring.gpg] \
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/vscode-archive-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/vscode-archive-keyring.gpg] \
             https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
     sudo apt-get update -qq
     sudo apt-get install -qq -y code
@@ -56,7 +92,7 @@ function install_vscode(){
 
 # Chrome
 function install_chrome(){
-    curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/googlechrome-keyring.gpg > /dev/null
+    curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/googlechrome-keyring.gpg > /dev/null
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/googlechrome-keyring.gpg] \
             http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
     sudo apt-get update -qq
@@ -65,7 +101,7 @@ function install_chrome(){
 }
 
 # Docker 
-function install_docker {
+function install_docker(){
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
             https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -79,33 +115,43 @@ function install_docker {
     newgrp docker 
 }
 
+#---------------------------------------------------------------------------------------------------#
+# Shell Set-up
+#---------------------------------------------------------------------------------------------------#
+
 # Oh-my-zsh
-function install_ohmyzsh {
+function install_ohmyzsh(){
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 }
 
-#
-#source .profile
+function install_nerd_fonts(){
+    # git clone --depth 1 git@github.com:ryanoasis/nerd-fonts.git
+    # ./nerd-fonts/install.sh FiraCode Meslo
+}
 
-
-# zsh-plugins
-# sudo -H pip3 install thefuck — user
-# cd ~/.oh-my-zsh/custom/plugins
-# git clone --depth 1 git@github.com:zsh-users/zsh-autosuggestions.git
-# git clone --depth 1 git@github.com:zsh-users/zsh-syntax-highlighting.
-
-# Themes
-# git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-# Set ZSH_THEME="powerlevel10k/powerlevel10k" in ~/.zshrc.
+function install_ohmyzsh_plugins(){
+    git clone --depth 1 git@github.com:zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    git clone --depth 1 git@github.com:zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    # fzf
+    git clone --depth 1 https://github.com/junegunn/fzf.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fzf
+    ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fzf/install
+    # thefuck
+    git clone --depth 1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    sudo pip3 install thefuck --user
+    # poetry
+    mkdir $ZSH_CUSTOM/plugins/poetry
+    poetry completions zsh > $ZSH_CUSTOM/plugins/poetry/_poetry
+}
 
 
 # other prompt - Starship
 # mkdir -p ~/.local/share/fonts
-# git clone --depth 1 git@github.com:ryanoasis/nerd-fonts.git
-# ./nerd-fonts/install.sh FiraCode Meslo
+
 # curl -sS https://starship.rs/install.sh | sh
 # eval "$(starship init bash)"
 # eval "$(starship init zsh)"
+
+# 
 
 
 
@@ -114,7 +160,7 @@ function install_ohmyzsh {
 #---------------------------------------------------------------------------------------------------#
 
 # Setting up SSH and Github
-function github_ssh_key {
+function github_ssh_key(){
     read -p "Enter GitHub e-mail: " GITHUB_EMAIL
     read -p "Enter name: " NAME
     echo "Using e-mail $GITHUB_EMAIL"
@@ -126,3 +172,7 @@ function github_ssh_key {
     git config --global user.email $GITHUB_EMAIL
     git config --global user.name $NAME
 }
+
+
+# TODO
+# bash alias to create and activate new python venv
