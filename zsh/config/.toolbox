@@ -1,0 +1,66 @@
+create_venv() {
+  if [ -n "$VIRTUAL_ENV" ]; then
+    echo "Currently in virtual environment \"$VIRTUAL_ENV\". Deactivating..."
+    deactivate
+  fi
+
+  if [ -d "venv" ]; then
+    read "answer?A venv folder already exists. Do you want to remove it and create a new one? (y/n) "
+    if [ "$answer" != "y" ]; then
+      echo "Exiting without creating a new virtual environment."
+      return
+    else
+      echo "Removing existing virtual environment..."
+      rm -rf venv
+    fi
+  fi
+
+  echo "Creating new virtual environment..."
+  python3 -m venv venv
+
+  echo "Activating virtual environment..."
+  source venv/bin/activate
+
+  if [ -f "requirements.txt" ]; then
+    echo "Installing requirements from requirements.txt..."
+    pip install -r requirements.txt
+  fi
+}
+
+
+function echo_style() {
+    local msg="$1"
+    local color="$2"
+    local style="${3:-normal}"
+
+    case "$color:$style" in
+        black:bold) echo -e "\033[30;1m$msg\033[0m" ;;
+        red:bold) echo -e "\033[31;1m$msg\033[0m" ;;
+        green:bold) echo -e "\033[32;1m$msg\033[0m" ;;
+        yellow:bold) echo -e "\033[33;1m$msg\033[0m" ;;
+        blue:bold) echo -e "\033[34;1m$msg\033[0m" ;;
+        magenta:bold) echo -e "\033[35;1m$msg\033[0m" ;;
+        cyan:bold) echo -e "\033[36;1m$msg\033[0m" ;;
+        white:bold) echo -e "\033[1m$msg\033[0m" ;;
+        gray:bold) echo -e "\033[37;1m$msg\033[0m" ;;
+        black:dim) echo -e "\033[30;2m$msg\033[0m" ;;
+        red:dim) echo -e "\033[31;2m$msg\033[0m" ;;
+        green:dim) echo -e "\033[32;2m$msg\033[0m" ;;
+        yellow:dim) echo -e "\033[33;2m$msg\033[0m" ;;
+        blue:dim) echo -e "\033[34;2m$msg\033[0m" ;;
+        magenta:dim) echo -e "\033[35;2m$msg\033[0m" ;;
+        cyan:dim) echo -e "\033[36;2m$msg\033[0m" ;;
+        white:dim) echo -e "\033[2m$msg\033[0m" ;;
+        gray:dim) echo -e "\033[37;2m$msg\033[0m" ;;
+        black:*) echo -e "\033[30m$msg\033[0m" ;;
+        red:*) echo -e "\033[31m$msg\033[0m" ;;
+        green:*) echo -e "\033[32m$msg\033[0m" ;;
+        yellow:*) echo -e "\033[33m$msg\033[0m" ;;
+        blue:*) echo -e "\033[34m$msg\033[0m" ;;
+        magenta:*) echo -e "\033[35m$msg\033[0m" ;;
+        cyan:*) echo -e "\033[36m$msg\033[0m" ;;
+        gray:*) echo -e "\033[37m$msg\033[0m" ;;
+        white:*) echo -e "$msg" ;;
+        *) echo "$msg" ;;
+    esac
+}

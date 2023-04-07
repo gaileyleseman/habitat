@@ -10,6 +10,7 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export FZF_BASE="$HOME/.oh-my-zsh/custom/plugins/fzf/"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -78,23 +79,26 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-autopep8
+azure
 colored-man-pages
-dirhistory
 docker
+fzf
 gh
 git
-git-flow
+git-auto-fetch
 helm
-history
+jira
 jsontools
 kubectl
+minikube
+poetry
 sudo
 ubuntu
 vscode
 web-search
 z
 zsh-autosuggestions
+zsh-interactive-cd
 zsh-syntax-highlighting
 )
 
@@ -132,3 +136,11 @@ eval $(thefuck --alias fix)
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# -------------------------------------------------------------------------------# 
+# Custom Functions
+source ~/.toolbox
+
+# Custom Aliases
+alias activate="source ./venv/bin/activate"
+alias bat="batcat"
