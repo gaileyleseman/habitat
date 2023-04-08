@@ -40,6 +40,10 @@ Some of my personal favorites:
 - <kbd>Ctrl</kbd> + <kbd>T</kbd> - will recursively search the current directory for the file you are typing
   - can be used with other commands like `cd` and `python`
 
+- `agi` - will install a package with `sudo apt-get install`
+  - example: `agi python3`
+  - also: `agu` for `sudo apt-get update`
+
 - `fuck` - will try to autocorrect the mistake in your previous command and prompt you with a solution. Some examples of mistakes:
   - if you made a type:, e.g. `puthon`
   - if you forgot to add a flag, e.g. `rm <folder>`
@@ -48,12 +52,23 @@ Some of my personal favorites:
   - if you forgot to set the remote as upstream on your new branch when you push
   - and many more, just try and see
 
+- `gcb` - will create and checkout a new branch
+  - example: `gcb feature/cool-thing`
+  - also: `gco` for `git checkout`, `gco -` to go to the previous branch and `gst` for `git status`
+
 - `google` - will directly search what you type on that search engine, also works for StackOverflow and
   - example: `google is pluto a planet`
   - example: `stackoverflow how to concatenate std::string and int c++`
 
+- `is_json` - will return if a file is a valid json
+  - example: `is_json < my_file.json`
+
 - `jira branch` - opens the JIRA ticket referenced in the branch name in your browser
   - For this to work you need to update the url in `.jira-url` to match your board.
+  - also: `jira new` to create a new JIRA ticket and `jira mine` to view your JIRA tickets
+
+- `z` - tool to directly jump to any directory that you have visited before
+  - example: `z foo` + <kbd>Tab</kbd> to directy jump to `~/super/nested/directory/with/folder/foo`
 
 ### custom
 
@@ -64,3 +79,5 @@ Some of my personal favorites:
 
 - auto completion for commands for different packages such as `docker`, `git`, `helm`, `kubectl`, `minikube`, etc.
 - `git-auto-fetch` will automatically fetch the latest changes from the remote repository
+- interactive `cd` command that will show you the contents of the directory you are in
+- press <kbd>Esc</kbd> twice to clear to add `sudo` to your previous command
