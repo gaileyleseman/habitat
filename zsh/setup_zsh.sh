@@ -181,9 +181,9 @@ function setup_zsh(){
     echo_style "Installing prerequisites... Please enter your password when prompted." blue bold;
 
     sudo apt-get update > /dev/null && \
-        sudo apt-get install -y software-properties-common && \
+        sudo apt-get install -qq software-properties-common && \
         sudo add-apt-repository ppa:git-core/ppa -y > /dev/null && \
-        sudo apt-get install -y \
+        sudo apt-get install -qq \
         curl \
         git \
         python3-pip && \

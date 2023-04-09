@@ -15,8 +15,6 @@ Install and configure `zsh` with the provided installation script:
 
 If you have not installed it already, the script will also prompt you if you want to install `terminator`, a nice terminal emulator that has a split-screen functionality that allows you to have multiple terminals in one window.
 
-
-
 ## Favorite features
 
 Some of my personal favorites:
@@ -39,11 +37,12 @@ Some of my personal favorites:
   - if you try to install the wrong package, e.g. `pip3 install yaml` or
   - if you forgot to add `sudo`
   - if you forgot to set the remote as upstream on your new branch when you push
-  - and many more, just try and see
+  - and maybe more, just try and see
 
 - `gcb` - will create and checkout a new branch
   - example: `gcb feature/cool-thing`
-  - also: `gco` for `git checkout`, use `gco -` to directly check out your previous branch
+  - also: `gco` for `git checkout`, so you can use `gco -` to check out your previous branch
+  - also: `gcmsg` for `git commit -m`
 
 - `google` - will directly search what you type on that search engine, also works for StackOverflow and
   - example: `google is pluto a planet`
@@ -66,11 +65,10 @@ Some of my personal favorites:
 
 ### other functionalities
 
-- auto completion for commands for different packages such as `docker`, `git`, `helm`, `kubectl`, `minikube`, etc.
+- auto completion for commands for different packages such as `docker`, `git`, `helm`, `kubectl`, `minikube`, `poetry` etc.
 - `git-auto-fetch` will automatically fetch the latest changes from the remote repository
 - interactive `cd` command that will show you the contents of the directory you are in
 - press <kbd>Esc</kbd> twice to clear to add `sudo` to your previous command
-
 
 ## Troubleshooting
 
