@@ -2,69 +2,102 @@
 # Software via APT
 #---------------------------------------------------------------------------------------------------#
 function install_basic_pkgs(){
-    sudo apt-get install -y git
-    sudo apt-get install -y curl
-    sudo apt-get install -y terminator
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y \
+    bat \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    lsb-release \
+    python3-pip \
+    python3-dev \
+    python3-setuptools \
+    python3-vcstool \
+    echo "installed packages through apt"
+}
+
+function install_python(){
+    sudo add-apt-repository ppa:deadsnakes/ppa \
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y \
+    python3.11 \
+    python3.11-venv
+    echo "installed alternative python"
+}
+
+# apt install nvidia-cuda-toolkit
+
+#---------------------------------------------------------------------------------------------------#
+# Software via Snap
+#---------------------------------------------------------------------------------------------------#
+
+function install_snap_pkgs(){
+    sudo snap install \
+    bitwarden \
+    bw \
+    code \
+    insomnia \
+    postman \
+    rpi-imager \
+    spotify \
+    echo "installed packages through snap"
 }
 
 
+function install_work_pkgs(){
+    sudo snap install \
+    code \
+    teams-for-linux \
+    echo "installed work packages through snap"
+}
+
 #---------------------------------------------------------------------------------------------------#
-# Software via Debian Packages
+# Other Software Installations
 #---------------------------------------------------------------------------------------------------#
 
-# Spotify
-function install_spotify(){
-    curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
-    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    sudo apt-get update
-    sudo apt-get install -y spotify-client
+function install_prep(){
+    sudo mkdir -p /etc/apt/keyrings
 }
 
 # GitHub CLI
 function install_github_cli(){
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install -y gh
-}
-
-# Microsoft Teams Desktop
-function install_teams(){
-    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-    sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main" > /etc/apt/sources.list.d/teams.list'
-    sudo apt-get update
-    sudo apt-get install -y teams
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+            https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y gh
+    echo "installed GitHub CLI"
 }
 
 # VS Code
 function install_vscode(){
-    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    sudo apt-get update
-    sudo apt-get install -y code
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/vscode-archive-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/vscode-archive-keyring.gpg] \
+            https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y code
+    echo "installed VS Code"
 }
 
 # Chrome
 function install_chrome(){
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-    sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-    sudo apt-get update
-    sudo apt-get install google-chrome-stable
+    curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/googlechrome-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/googlechrome-keyring.gpg] \
+            http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y google-chrome-stable
+    echo "installed Google Chrome"
 }
 
 # Docker 
-function install_docker {
-    sudo apt-get update
-    sudo apt-get install ca-certificates curl gnupg lsb-release
-
-    # docker
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+function install_docker(){
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+            https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    echo "installed Docker Engine"
 
     # post-installation steps
     sudo groupadd docker
@@ -72,14 +105,11 @@ function install_docker {
     newgrp docker 
 }
 
-function install_docker_script {
-    curl -s https://get.docker.com | bash -s
-}
-
-
 #---------------------------------------------------------------------------------------------------#
-# OTHER
+# Shell Set-up
 #---------------------------------------------------------------------------------------------------#
+
+source ./zsh/setup_zsh.sh
 
 
 #---------------------------------------------------------------------------------------------------#
@@ -87,43 +117,15 @@ function install_docker_script {
 #---------------------------------------------------------------------------------------------------#
 
 # Setting up SSH and Github
-function github_ssh_key () {
-    read -p "Enter GitHub e-mail :" email
-    echo "Using e-mail $email"
+function github_ssh_key(){
+    read -p "Enter GitHub e-mail: " GITHUB_EMAIL
+    read -p "Enter name: " NAME
+    echo "Using e-mail $GITHUB_EMAIL"
     if [ ! -f ~/.ssh/id_rsa ]; then
-        ssh-keygen -t rsa -b 4096 -C "$email"
+        ssh-keygen -t rsa -b 4096 -C "$GITHUB_EMAIL"
         ssh-add ~/.ssh/id_rsa
     fi
     gh auth login -p ssh
+    git config --global user.email $GITHUB_EMAIL
+    git config --global user.name $NAME
 }
-
-
-#---------------------------------------------------------------------------------------------------#
-# Prime Vision
-#---------------------------------------------------------------------------------------------------#
-
-# Setting up SSH and Gitlab
-function pv_gitlab_ssh_key () {
-    # https://gitlab.cicd.primevisiononline.com/-/profile/keys
-    echo hoi 
-}
-
-
-# Downloading PV repositories 
-function pv_clone_repos () {
-    # robotics
-    mkdir ~/pv-robotics && cd ~/pv-robotics
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/cloud/services/floorplan-service.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/simulators/simulator-workspace.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/navigation.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/fleet/motion-planning-library.git
-
-    # documentation
-    mkdir documentation && cd documentation
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-setup.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-rollout.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robot-troubleshooting.git
-    git clone git@gitlab.cicd.primevisiononline.com:autonomous-sorting/docu/robotic-sorting-maintenance.git
-    cd ~
-}
-
