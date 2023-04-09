@@ -211,6 +211,7 @@ function setup_zsh(){
             echo ""
             echo "Installing terminator..."
             sudo apt-get install -y terminator
+            cp "$my_config_dir/terminator_config" "$HOME/.config/terminator/config"
         fi
     fi 
 }
