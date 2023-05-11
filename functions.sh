@@ -4,6 +4,7 @@
 function install_basic_pkgs(){
     sudo apt-get update -qq
     sudo apt-get install -qq -y \
+    apt-transport-https \
     bat \
     ca-certificates \
     curl \
@@ -18,12 +19,13 @@ function install_basic_pkgs(){
 }
 
 function install_python(){
-    sudo add-apt-repository ppa:deadsnakes/ppa \
+    version=${1:-3.12} # default to 3.12
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
     sudo apt-get update -qq
     sudo apt-get install -qq -y \
-    python3.11 \
-    python3.11-venv
-    echo "installed alternative python"
+    python$version\
+    python$version-venv
+    echo "installed python $version"
 }
 
 # apt install nvidia-cuda-toolkit
@@ -48,6 +50,7 @@ function install_snap_pkgs(){
 function install_work_pkgs(){
     sudo snap install \
     code \
+    storage-explorer \
     teams-for-linux \
     echo "installed work packages through snap"
 }
@@ -60,15 +63,7 @@ function install_prep(){
     sudo mkdir -p /etc/apt/keyrings
 }
 
-# GitHub CLI
-function install_github_cli(){
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
-            https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    sudo apt-get update -qq
-    sudo apt-get install -qq -y gh
-    echo "installed GitHub CLI"
-}
+# Applications -------------------------------------------------------------------------------------#
 
 # VS Code
 function install_vscode(){
@@ -90,6 +85,8 @@ function install_chrome(){
     echo "installed Google Chrome"
 }
 
+# Software ----------------------------------------------------------------------------------------#
+
 # Docker 
 function install_docker(){
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null
@@ -103,6 +100,32 @@ function install_docker(){
     sudo groupadd docker
     sudo usermod -aG docker $USER
     newgrp docker 
+}
+
+# Helm
+function install_helm(){
+    curl https://baltocdn.com/helm/signing.asc | gpg --dearmor -o /usr/share/keyrings/helm.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] \
+            https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+    sudo apt-get update -qq
+    sudo apt-get install -y helm
+    echo "installed Helm"
+}
+
+# Poetry
+function install_poetry(){
+    curl -sSL https://install.python-poetry.org | python3 - > /dev/null
+    echo "installed Poetry"
+}
+
+# GitHub CLI
+function install_github_cli(){
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+            https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -qq -y gh
+    echo "installed GitHub CLI"
 }
 
 #---------------------------------------------------------------------------------------------------#
