@@ -52,6 +52,7 @@ function install_work_pkgs(){
     code \
     storage-explorer \
     teams-for-linux \
+    spotify \
     echo "installed work packages through snap"
 }
 
@@ -156,4 +157,15 @@ function github_ssh_key(){
     gh auth login -p ssh
     git config --global user.email $GITHUB_EMAIL
     git config --global user.name $NAME
+}
+
+function create_ssh_key(){
+    if [ ! -f ~/.ssh/id_rsa ]; then
+        read -p "Enter your e-mail: " EMAIL
+        ssh-keygen -t rsa -b 4096 -C "$EMAIL"
+        ssh-add ~/.ssh/id_rsa
+    fi
+    echo "This is the public key:"
+    echo " "
+    cat ~/.ssh/id_rsa.pub
 }
