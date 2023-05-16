@@ -99,8 +99,16 @@ function install_ohmyzsh_plugins(){
     # Install Nerd Fonts
     install_nerd_fonts
 
-    # Install thefuck command
     echo_style "\nInstalling other tools..." white bold
+    # Install fzf command
+    if ! command -v fzf >/dev/null 2>&1; then
+        echo "Installing fzf..."
+        sudo apt-get install fzf
+    else
+        echo_style "fzf is already installed." gray dim
+    fi
+
+    # Install thefuck command
     if ! command -v thefuck >/dev/null 2>&1; then
         echo "Installing thefuck..."
         pip3 install thefuck --user > /dev/null
@@ -110,9 +118,8 @@ function install_ohmyzsh_plugins(){
     
     # Install poetry completions
     poetry_dir="${CUSTOM_DIR}/plugins/poetry"
-    if ! command -v poetry >/dev/null 2>&1; then
-        echo "Installing poetry..."
-        pip3 install poetry > /dev/null
+    if command -v poetry completions zsh >/dev/null 2>&1; then
+        echo "Poetry is not installed, skipping..." 
     fi 
     if [ ! -d "${poetry_dir}" ]; then
         echo "Installing poetry completions"
@@ -148,7 +155,7 @@ function copy_zsh_dotfiles(){
                 echo_style "Skipping $file (no changes)" gray dim
                 continue
             else
-                backup_file="$backup_dir/$file_$(date +%Y%m%d_%H%M%S)_.bak"
+                backup_file="$backup_dir/$(date +%Y%m%d_%H%M%S)_$file.bak"
                 mv "$dst_file" "$backup_file"
                 echo "Backed up $dst_file to $backup_file"
             fi
@@ -175,7 +182,7 @@ function setup_zsh(){
     echo " ███████║███████╗   ██║   ╚██████╔╝██║         ███████╗███████║██║  ██║";
     echo " ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝         ╚══════╝╚══════╝╚═╝  ╚═╝";
     echo "                                                                       ";
-    echo_style "----------------------  Gailey's ZSH Setup Script ----------------------" blue bold;
+    echo_style "----------------------  Gailey's ZSH Setup Script -----------------------" blue bold;
     echo "                                                                       ";
     
     echo_style "Installing prerequisites... Please enter your password when prompted." blue bold;
@@ -184,6 +191,7 @@ function setup_zsh(){
         sudo apt-get install -qq software-properties-common && \
         sudo add-apt-repository ppa:git-core/ppa -y > /dev/null && \
         sudo apt-get install -qq \
+        bat \
         curl \
         git \
         python3-pip && \
@@ -211,6 +219,13 @@ function setup_zsh(){
             echo ""
             echo "Installing terminator..."
             sudo apt-get install -y terminator
+            cp "$my_config_dir/terminator.cfg" "$HOME/.config/terminator/config"
+        fi
+    else
+        read -n 1 -p "$(echo_style '\nDo you want set the terminator config? [y/n]' blue bold)" answer
+        if [[ $answer =~ [yY](es)* ]]; then
+            echo ""
+            cp "$my_config_dir/terminator.cfg" "$HOME/.config/terminator/config"
         fi
     fi 
 }

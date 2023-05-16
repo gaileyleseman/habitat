@@ -62,6 +62,7 @@ Some of my personal favorites:
 
 - `create_venv` will create a virtual environment, activate it and install the requirements for that directory
 - `activate` will activate the default virtual environment (`venv`) for that directory
+- `install_python <version>` will install a certain python version for you (e.g. `install_python 3.10`)
 
 ### other functionalities
 
