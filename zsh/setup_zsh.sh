@@ -99,8 +99,16 @@ function install_ohmyzsh_plugins(){
     # Install Nerd Fonts
     install_nerd_fonts
 
-    # Install thefuck command
     echo_style "\nInstalling other tools..." white bold
+    # Install fzf command
+    if ! command -v fzf >/dev/null 2>&1; then
+        echo "Installing fzf..."
+        sudo apt-get install fzf
+    else
+        echo_style "fzf is already installed." gray dim
+    fi
+
+    # Install thefuck command
     if ! command -v thefuck >/dev/null 2>&1; then
         echo "Installing thefuck..."
         pip3 install thefuck --user > /dev/null
@@ -211,7 +219,13 @@ function setup_zsh(){
             echo ""
             echo "Installing terminator..."
             sudo apt-get install -y terminator
-            cp "$my_config_dir/terminator_config" "$HOME/.config/terminator/config"
+            cp "$my_config_dir/terminator.cfg" "$HOME/.config/terminator/config"
+        fi
+    else
+        read -n 1 -p "$(echo_style '\nDo you want set the terminator config? [y/n]' blue bold)" answer
+        if [[ $answer =~ [yY](es)* ]]; then
+            echo ""
+            cp "$my_config_dir/terminator.cfg" "$HOME/.config/terminator/config"
         fi
     fi 
 }
