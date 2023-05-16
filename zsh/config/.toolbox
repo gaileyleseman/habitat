@@ -27,6 +27,22 @@ create_venv() {
   fi
 }
 
+function install_python() {
+    local version=${1:-3.12}  # Default to 3.12
+
+    # Add DeadSnakes PPA
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
+
+    # Update package lists
+    sudo apt-get update -qq
+
+    # Install Python and venv
+    sudo apt-get install -qq -y \
+        python"$version" \
+        python"$version"-venv
+
+    echo "Installed Python $version"
+}
 
 function echo_style() {
     local msg="$1"
