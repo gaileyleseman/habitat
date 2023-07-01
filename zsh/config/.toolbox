@@ -1,4 +1,8 @@
-create_venv() {
+##################################################################
+#                        TOOLBOX                                 #
+##################################################################
+
+function create_venv() {
   if [ -n "$VIRTUAL_ENV" ]; then
     echo "Currently in virtual environment \"$VIRTUAL_ENV\". Deactivating..."
     deactivate
@@ -30,6 +34,11 @@ create_venv() {
 function install_python() {
     local version=${1:-3.12}  # Default to 3.12
 
+    if ! [[ $version =~ ^3\. ]]; then
+        echo "That version does not work, the indicated version must start with '3.'"
+        return
+    fi
+
     # Add DeadSnakes PPA
     sudo add-apt-repository ppa:deadsnakes/ppa -y
 
@@ -41,7 +50,28 @@ function install_python() {
         python"$version" \
         python"$version"-venv
 
-    echo "Installed Python $version"
+    echo "Python $version installed successfully!"
+    # Add to the alternatives system
+    if update-alternatives --query python | grep -q "python$version"; then
+      return 
+    else 
+      echo "Adding Python $version to the alternatives system. Use 'update_python' to change the default version"
+      sudo update-alternatives --install /usr/bin/python python /usr/bin/python"$version" 1
+      sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python"$version" 1
+    fi
+}
+
+
+function update_python(){
+  echo_style "Available Python versions:" white
+  update-alternatives --list python3
+
+  read -p "Which version of Python do you want to use? (e.g. 3.10) " version
+  sudo update-alternatives --set python /usr/bin/python"$version"
+  sudo update-alternatives --set python3 /usr/bin/python"$version"
+
+  new_version=$(python --version)
+  echo_style "Python version changed to $new_version" 
 }
 
 function echo_style() {

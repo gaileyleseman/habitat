@@ -15,9 +15,9 @@ Install and configure `zsh` with the provided installation script:
 
 If you have not installed it already, the script will also prompt you if you want to install `terminator`, a nice terminal emulator that has a split-screen functionality that allows you to have multiple terminals in one window.
 
-## Favorite features
+## Favourite features
 
-Some of my personal favorites:
+Some of my personal favourites:
 
 ### oh-my-zsh plugins
 
@@ -63,6 +63,7 @@ Some of my personal favorites:
 - `create_venv` will create a virtual environment, activate it and install the requirements for that directory
 - `activate` will activate the default virtual environment (`venv`) for that directory
 - `install_python <version>` will install a certain python version for you (e.g. `install_python 3.10`)
+- `update_python` can be used to point the `python3` command to a different version
 
 ### other functionalities
 
