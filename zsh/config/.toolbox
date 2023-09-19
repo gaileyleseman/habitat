@@ -81,6 +81,14 @@ function pre-commit-copy-habitat(){
   curl -o .pre-commit-config.yaml https://raw.githubusercontent.com/gaileyleseman/habitat/main/.pre-commit-config.yaml
 }
 
+function clang-format-copy-habitat(){
+  curl -o .clang-format https://raw.githubusercontent.com/gaileyleseman/habitat/main/.clang-format
+}
+
+function ruff-copy-habitat(){
+  curl -o .ruff.toml https://raw.githubusercontent.com/gaileyleseman/habitat/main/.ruff.toml
+}
+
 function echo_style() {
     local msg="$1"
     local color="$2"

@@ -16,10 +16,7 @@ More information in the [README](./zsh/README.md), see the image below for an ex
 
 ![image](https://user-images.githubusercontent.com/22048962/230769612-e225fd30-305d-469b-ab2d-20af62dc3751.png)
 
-## Linting and Formatting
-
-
-## Pre-commit
+## pre-commit
 
 Git hooks are scripts that Git executes before or after events such as: commit, push, and receive.
 You can use these hooks to catch (style) errors before they are committed by running linting and formatting tools.
@@ -38,3 +35,22 @@ Alternatively, if you have set up the `toolbox` functions from this repository, 
 ```bash
 pre-commit-copy-habitat
 ```
+
+## Linting and Formatting
+
+### Python
+
+- [Black](https://black.readthedocs.io/en/stable/)
+  - Install with `pip install black`
+  - VSCode extension: [Black Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
+- [Ruff](https://docs.astral.sh/ruff)
+  - Install with `pip install ruff`
+  - VSCode extension: [Ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
+  - Configuration file: [.ruff.toml](./.ruff.toml), copy with `ruff-copy-habitat`
+
+### C++
+
+- [Clang-Format](https://clang.llvm.org/docs/ClangFormat.html)
+    - Install with `sudo apt install clang-format-13`
+    - VSCode extension: [Clang-Format](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format)
+    - Configuration file: [.clang-format](./.clang-format), copy with `clang-format-copy-habitat`
