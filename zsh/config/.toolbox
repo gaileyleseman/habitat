@@ -77,6 +77,10 @@ function update_python(){
   echo_style "Python version changed to $new_version"
 }
 
+function pre-commit-copy-habitat(){
+  curl -o .pre-commit-config.yaml https://raw.githubusercontent.com/gaileyleseman/habitat/main/.pre-commit-config.yaml
+}
+
 function echo_style() {
     local msg="$1"
     local color="$2"
