@@ -111,6 +111,9 @@ zsh-syntax-highlighting
 
 source $ZSH/oh-my-zsh.sh
 
+fpath+=~/.zfunc
+autoload -Uz compinit && compinit
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

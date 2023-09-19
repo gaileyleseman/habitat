@@ -145,26 +145,31 @@ function copy_zsh_dotfiles(){
     mkdir -p "$backup_dir"
 
 
-    for file in "${files[@]}"
-    do
-        src_file="$my_config_dir/$file"
-        dst_file="${HOME}/$file"
+    read -n 1 -p "$(echo_style '\nDo you also want to copy the configuration files? [y/n]' blue bold)" answer
+    if [[ $answer =~ [yY](es)* ]]; then
+        for file in "${files[@]}"
+        do
+            src_file="$my_config_dir/$file"
+            dst_file="${HOME}/$file"
 
-        if [ -e "$dst_file" ]; then
-            if diff "$src_file" "$dst_file" >/dev/null; then
-                echo_style "Skipping $file (no changes)" gray dim
-                continue
-            else
-                backup_file="$backup_dir/$(date +%Y%m%d_%H%M%S)_$file.bak"
-                mv "$dst_file" "$backup_file"
-                echo "Backed up $dst_file to $backup_file"
+            if [ -e "$dst_file" ]; then
+                if diff "$src_file" "$dst_file" >/dev/null; then
+                    echo_style "Skipping $file (no changes)" gray dim
+                    continue
+                else
+                    backup_file="$backup_dir/$(date +%Y%m%d_%H%M%S)_$file.bak"
+                    mv "$dst_file" "$backup_file"
+                    echo "Backed up $dst_file to $backup_file"
+                fi
             fi
-        fi
-    
-        # Copy the new file to the destination directory
-        cp "$src_file" "$dst_file"
-        echo "Copied $src_file to $dst_file"
-    done 
+        
+            # Copy the new file to the destination directory
+            cp "$src_file" "$dst_file"
+            echo "Copied $src_file to $dst_file"
+        done 
+    else
+        echo_style "\nConfiguration files not copied." gray dim
+    fi
 }
 
 
