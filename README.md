@@ -2,7 +2,7 @@
 
 Scripts and programs for setting up a new PC.
 
-## PC
+## PC Setup
 
 Helper script to configure a new PC.
 The script will install a set of packages, programs and tools that you might find useful.
@@ -15,3 +15,42 @@ The script will also install `oh-my-zsh` with a Powerlevel10k theme and a set of
 More information in the [README](./zsh/README.md), see the image below for an example of the prompt.
 
 ![image](https://user-images.githubusercontent.com/22048962/230769612-e225fd30-305d-469b-ab2d-20af62dc3751.png)
+
+## pre-commit
+
+Git hooks are scripts that Git executes before or after events such as: commit, push, and receive.
+You can use these hooks to catch (style) errors before they are committed by running linting and formatting tools.
+[Pre-commit](https://pre-commit.com/) is a multi-language package manager that allows you to easily install and manage pre-commit hooks.
+
+To use pre-commit, you'll need to create a configuration file named `.pre-commit-config.yaml` in the root of your repository.
+Then run the following commands to install pre-commit and install the hooks specified in the configuration file.
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Alternatively, if you have set up the `toolbox` functions from this repository, you use the following command to copy the pre-commit configuration file from this repository to your current working directory.
+
+```bash
+pre-commit-copy-habitat
+```
+
+## Linting and Formatting
+
+### Python
+
+- [Black](https://black.readthedocs.io/en/stable/)
+  - Install with `pip install black`
+  - VSCode extension: [Black Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
+- [Ruff](https://docs.astral.sh/ruff)
+  - Install with `pip install ruff`
+  - VSCode extension: [Ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
+  - Configuration file: [.ruff.toml](./.ruff.toml), copy with `ruff-copy-habitat`
+
+### C++
+
+- [Clang-Format](https://clang.llvm.org/docs/ClangFormat.html)
+    - Install with `sudo apt install clang-format-13`
+    - VSCode extension: [Clang-Format](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format)
+    - Configuration file: [.clang-format](./.clang-format), copy with `clang-format-copy-habitat`

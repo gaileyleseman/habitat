@@ -283,6 +283,16 @@ function install_python_tools(){
     else
         echo_style "Skipping Poetry installation" white
     fi
+
+    # Pre-commit, Ruff, Black
+    read -n 1 -p "$(echo_style '\nDo you want to install pre-commit, ruff and black? [y/n]' white bold)" answer
+    echo ""
+    if [[ $answer == [Yy]* ]]; then
+        pip3 install pre-commit ruff black > /dev/null
+        echo "installed pre-commit, ruff and black"
+    else
+        echo_style "Skipping pre-commit, ruff and black installation" white
+    fi
 }
 
 # GitHub CLI
@@ -301,6 +311,26 @@ function install_git_tools(){
         echo "installed GitHub CLI"
     else
         echo_style "Skipping GitHub CLI installation" white
+    fi
+}
+
+function install_llvm_clang(){
+    echo_style "\nLLVM/Clang: " blue bold
+
+    # LLVM/Clang
+    read -n 1 -p "$(echo_style 'Do you want to install LLVM/Clang? [y/n]' white bold)" answer
+    echo ""
+    if [[ $answer == [Yy]* ]]; then
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo apt-get update -qq
+        sudo ./llvm.sh all
+        rm llvm.sh
+        sudo apt-get upgrade -qq
+        echo "installed LLVM/Clang"
+
+    else
+        echo_style "Skipping LLVM/Clang installation" white
     fi
 }
 

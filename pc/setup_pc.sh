@@ -40,6 +40,7 @@ function new_pc(){
     install_kubernetes_tools
     install_git_tools
     install_python_tools
+    install_llvm_clang
 
     echo_style "\n-------------------------------------------------------------------------" blue bold;
     echo_style "                         Settings etc.                                   " blue bold;
