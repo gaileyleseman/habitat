@@ -334,6 +334,25 @@ function install_llvm_clang(){
     fi
 }
 
+function install_node_tools(){
+    echo_style "\nNode Version/Package Managers: " blue bold
+
+    # Node Version Manager
+    read -n 1 -p "$(echo_style 'Do you want to install Node Version Manager? [y/n]' white bold)" answer
+    echo ""
+    if [[ $answer == [Yy]* ]]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash > /dev/null
+        echo "installed Node Version Manager"
+        # TODO: Source the things
+        nvm install node
+        echo "installed latest Node.js version"
+        nvm install-latest-npm
+        echo "installed latest npm version"
+    else
+        echo_style "Skipping Node Version Manager installation" white
+    fi
+}
+
 #---------------------------------------------------------------------------------------------------#
 # Settings
 #---------------------------------------------------------------------------------------------------#
