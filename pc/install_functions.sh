@@ -18,9 +18,18 @@ function install_basic_pkgs(){
     python3-pip \
     python3-dev \
     python3-setuptools \
-    python3-vcstools
+    python3-vcstools \
+    tree
 
     echo "Done! Installed some basic packages with apt."
+
+    # Update pip
+    pip install --upgrade pip > /dev/null
+    echo "Updated pip"
+
+    # Install pipx
+    pip install pipx > /dev/null
+    echo "Installed pipx"
 }
 
 # apt install nvidia-cuda-toolkit
@@ -247,7 +256,6 @@ function install_cloud_tools(){
     fi
 }
 
-# Poetry
 function install_python_tools(){
     echo_style "\nPython:" blue bold
 
@@ -274,25 +282,23 @@ function install_python_tools(){
         echo_style "Skipping Python update" white
     fi
 
-    # Poetry
-    read -n 1 -p "$(echo_style '\nDo you want to install Poetry? [y/n]' white bold)" answer
-    echo ""
-    if [[ $answer == [Yy]* ]]; then
-        curl -sSL https://install.python-poetry.org | python3 - > /dev/null
-        echo "installed Poetry"
-    else
-        echo_style "Skipping Poetry installation" white
-    fi
+    global_python_tools=(
+        "poetry"
+        "copier"
+        "pre-commit"
+        "ruff",
+        "black"
+    )
 
-    # Pre-commit, Ruff, Black
-    read -n 1 -p "$(echo_style '\nDo you want to install pre-commit, ruff and black? [y/n]' white bold)" answer
-    echo ""
-    if [[ $answer == [Yy]* ]]; then
-        pip3 install pre-commit ruff black > /dev/null
-        echo "installed pre-commit, ruff and black"
-    else
-        echo_style "Skipping pre-commit, ruff and black installation" white
-    fi
+    for tool in "${global_python_tools[@]}"; do
+        read -n 1 -p "$(echo_style "\nDo you want to install $tool? [y/n]" white bold)" answer
+        echo ""
+        if [[ $answer == [Yy]* ]]; then
+            pipx install $tool
+        else
+            echo_style "Skipping $tool installation" white
+        fi
+    done
 }
 
 # GitHub CLI
@@ -309,6 +315,8 @@ function install_git_tools(){
         sudo apt-get update -qq
         sudo apt-get install -qq -y gh
         echo "installed GitHub CLI"
+        gh extension install gh-copilot
+        echo "installed GitHub Copilot CLI extension" 
     else
         echo_style "Skipping GitHub CLI installation" white
     fi
@@ -331,6 +339,25 @@ function install_llvm_clang(){
 
     else
         echo_style "Skipping LLVM/Clang installation" white
+    fi
+}
+
+function install_node_tools(){
+    echo_style "\nNode Version/Package Managers: " blue bold
+
+    # Node Version Manager
+    read -n 1 -p "$(echo_style 'Do you want to install Node Version Manager? [y/n]' white bold)" answer
+    echo ""
+    if [[ $answer == [Yy]* ]]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash > /dev/null
+        echo "installed Node Version Manager"
+        # TODO: Source the things
+        nvm install node
+        echo "installed latest Node.js version"
+        nvm install-latest-npm
+        echo "installed latest npm version"
+    else
+        echo_style "Skipping Node Version Manager installation" white
     fi
 }
 
