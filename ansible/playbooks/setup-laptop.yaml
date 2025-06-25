@@ -1,0 +1,30 @@
+---
+- name: Complete laptop setup
+  hosts: laptops
+  become: yes
+  
+  pre_tasks:
+    - name: Show configuration for this machine
+      debug:
+        msg: |
+          Machine: {{ inventory_hostname }}
+          Group: {{ group_names }}
+          Apps: {{ apps | default([]) }}
+          IDEs: {{ ides | default([]) }}
+      tags: always
+
+  tasks:
+    - name: Install Packages
+      include_tasks: ../tasks/base-packages.yaml
+    - name: Install Apps
+      include_tasks: ../tasks/apps.yaml
+    - name: Install Developer Tools
+      include_tasks: ../tasks/development.yaml
+
+    #TODO: zsh + plugin manager
+    #TODO: dotfiles + gnu stow
+    #TODO: folder structure
+    #TODO: clone repositories to get started??
+    #TODO: name: Install Drivers
+
+    

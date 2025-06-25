@@ -1,0 +1,20 @@
+---
+- name: Check which UV tools are already installed
+  command: uv tool list
+  register: installed_tools
+  changed_when: false
+  become: no
+
+- name: Install UV tools
+  command: >
+    uv tool install {{ tool.name }}
+    {% if tool.with is defined %}
+    {% for w in tool.with %}--with {{ w }}{% endfor %}
+    {% endif %}
+  loop: "{{ tools }}"
+  loop_control:
+    loop_var: tool
+  when: tool.name not in installed_tools.stdout
+  register: tool_install
+  changed_when: tool_install.rc == 0
+  become: no

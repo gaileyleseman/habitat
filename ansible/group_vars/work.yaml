@@ -1,0 +1,5 @@
+---
+git: [gitlab]
+language_support: [python, cpp, javascript]
+containerization: [docker, k8s]
+cloud: [azure]

@@ -1,0 +1,11 @@
+---
+- name: Check if VS Code exists
+  stat:
+    path: /usr/bin/code
+  register: code_exists
+
+- name: Download and install VS Code
+  apt:
+    deb: https://go.microsoft.com/fwlink/?LinkID=760868
+    state: present
+  when: not code_exists.stat.exists

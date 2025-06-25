@@ -1,0 +1,21 @@
+---
+- name: Install NVM
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  args:
+    executable: /bin/bash
+    chdir: "{{ ansible_env.HOME }}"
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+- name: Ensure NVM is sourced in profile
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.profile"
+    line: 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+    create: yes
+
+- name: Install latest Node.js and set default via NVM
+  shell: |
+    bash -lc "nvm install node && nvm alias default && node install-latest-npm"
+  args:
+    executable: /bin/bash
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node"

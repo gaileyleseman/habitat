@@ -1,0 +1,19 @@
+---
+- name: Install uv using official script
+  shell: |
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    creates: ~/.local/bin/uv
+  become: no
+
+- name: Update uv to latest version
+  command: uv self update
+  register: uv_update
+  changed_when: "'Upgraded' in uv_update.stderr"
+  become: no
+
+- name: Check which tools are already installed
+  command: uv tool list
+  register: installed_tools
+  changed_when: false
+  become: no

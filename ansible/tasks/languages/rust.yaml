@@ -1,0 +1,7 @@
+---
+- name: Install Rust toolchain
+  package:
+    name:
+      - rustc
+      - cargo
+    state: present

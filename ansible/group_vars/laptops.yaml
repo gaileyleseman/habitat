@@ -1,0 +1,7 @@
+---
+extra_apt_packages: [terminator]
+
+ides: [vscode]
+productivity: [obsidian]
+entertainment: [spotify]
+containerization: [docker]

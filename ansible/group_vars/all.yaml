@@ -1,0 +1,48 @@
+---
+base_packages:
+  # Core system packages
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  
+  # Essential tools
+  - curl
+  - wget
+  - git
+  - unzip
+  - zip
+  
+  # Build tools
+  - build-essential
+  - software-properties-common
+  
+  # Utilities
+  - zsh
+  - vim
+  - nano
+  - htop
+  - tree
+  - bat
+  - jq
+  - rsync
+  - tmux
+  - fzf
+  - ripgrep
+  - fd-find
+
+extra_apt_packages: []
+
+productivity: []
+entertainment: []
+creative: []
+communication: []
+tools: []
+
+language_support: []
+ides: []
+containerization: []
+cloud: []
+
+drivers: []
+
+

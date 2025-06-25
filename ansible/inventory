@@ -1,0 +1,18 @@
+zbook ansible_host=localhost ansible_connection=local
+baksteen ansible_host=localhost ansible_connection=local  
+dell ansible_host=localhost ansible_connection=local
+
+pi ansible_host=192.168.1.100 ansible_user=pi
+
+[personal]
+zbook
+baksteen
+pi
+
+[work]
+dell
+
+[laptops]
+zbook
+baksteen
+dell

@@ -1,0 +1,22 @@
+---
+- name: Install Language Support
+  include_tasks: "languages/{{ item }}.yaml"
+  loop: "{{ language_support }}"
+  when: 
+    - language_support is defined
+    - language_support | length > 0
+
+- name: Install IDEs
+  include_tasks: "apps/{{ item }}.yaml"
+  loop: "{{ ides }}"
+  when: 
+    - ides is defined
+    - ides | length > 0
+    
+
+- name: Install Cloud Tools
+  include_tasks: "tools/{{ item }}.yaml"
+  loop: "{{ cloud }}"
+  when:
+    - cloud is defined
+    - cloud | length > 0

@@ -1,0 +1,6 @@
+---
+- name: Install Arduino IDE
+  apt:
+    name: arduino
+    state: present
+  become: yes
