@@ -40,7 +40,7 @@ tools: []
 
 language_support: []
 ides: []
-containerization: []
+containerization: [docker]
 cloud: []
 
 drivers: []

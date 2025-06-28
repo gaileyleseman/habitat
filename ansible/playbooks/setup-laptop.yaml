@@ -9,8 +9,13 @@
         msg: |
           Machine: {{ inventory_hostname }}
           Group: {{ group_names }}
-          Apps: {{ apps | default([]) }}
+          Productivity: {{ productivity | default([]) }}
+          Entertainment: {{ entertainment | default([]) }}
+          Creative: {{ creative | default([]) }}
+          Communication: {{ communication | default([]) }}
           IDEs: {{ ides | default([]) }}
+          Containerization: {{ containerization | default([]) }}
+          Cloud: {{ cloud | default([]) }}
       tags: always
 
   tasks:

@@ -12,7 +12,13 @@
   when: 
     - ides is defined
     - ides | length > 0
-    
+
+- name: Install Containerization Tools
+  include_tasks: "tools/{{ item }}.yaml"
+  loop: "{{ containerization }}"
+  when:
+    - containerization is defined
+    - containerization | length > 0
 
 - name: Install Cloud Tools
   include_tasks: "tools/{{ item }}.yaml"
