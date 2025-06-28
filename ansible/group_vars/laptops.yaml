@@ -2,6 +2,6 @@
 extra_apt_packages: [terminator]
 
 ides: [vscode]
-productivity: [obsidian, zen-browser]
+productivity: [obsidian]
 entertainment: [spotify]
-containerization: [docker]
+containerization: [docker, k8s]
