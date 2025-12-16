@@ -7,5 +7,5 @@ sudo add-apt-repository --yes --update ppa:ansible/ansible
 sudo apt install -y ansible
 
 # SSH Server
-sudo apt install openssh-server
+sudo apt install -y openssh-server
 sudo systemctl enable ssh

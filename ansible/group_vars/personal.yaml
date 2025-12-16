@@ -2,7 +2,7 @@
 productivity: [obsidian, bitwarden, zen-browser]
 creative: [obs]
 
-git: [github]
 language_support: [python, cpp, javascript, rust]
-ides: [vscode, zed, cursor, arduino]
+ides: [vscode, zed, cursor, antigravity, arduino]
+tools: [llm]
 

@@ -21,10 +21,10 @@
   tasks:
     - name: Install Packages
       include_tasks: ../tasks/base-packages.yaml
-    - name: Install Apps
-      include_tasks: ../tasks/apps.yaml
     - name: Install Developer Tools
       include_tasks: ../tasks/development.yaml
+    - name: Install Apps
+      include_tasks: ../tasks/apps.yaml
 
     #TODO: zsh + plugin manager
     #TODO: dotfiles + gnu stow

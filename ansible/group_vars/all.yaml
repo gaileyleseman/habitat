@@ -29,6 +29,12 @@ base_packages:
   - fzf
   - ripgrep
   - fd-find
+  - eza
+
+  # Python
+  - python3-dev 
+  - python3-pip 
+  - python3-setuptools
 
 extra_apt_packages: []
 

@@ -1,36 +1,11 @@
 ---
-- name: Create cursor directory
-  file:
-    path: /opt/cursor
-    state: directory
-
-- name: Download Cursor AppImage
+- name: Download Cursor .deb package
   get_url:
-    url: https://downloads.cursor.com/production/87ea1604be1f602f173c5fb67582e647fcef6c48/linux/x64/Cursor-1.1.2-x86_64.AppImage
-    dest: /opt/cursor/cursor.AppImage
-    mode: '0755'
-
-- name: Download Cursor icon
-  get_url:
-    url: https://us1.discourse-cdn.com/flex020/uploads/cursor1/original/2X/a/a4f78589d63edd61a2843306f8e11bad9590f0ca.png
-    dest: /opt/cursor/cursor.png
-
-- name: Create cursor command wrapper
-  copy:
-    content: |
-      #!/bin/bash
-      /opt/cursor/cursor.AppImage --no-sandbox "$@"
-    dest: /usr/local/bin/cursor
-    mode: '0755'
-
-- name: Create Cursor desktop entry
-  copy:
-    content: |
-      [Desktop Entry]
-      Name=Cursor
-      Exec=/opt/cursor/cursor.AppImage --no-sandbox
-      Icon=/opt/cursor/cursor.png
-      Type=Application
-      Categories=Development;IDE;
-    dest: /usr/share/applications/cursor.desktop
+    url: https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/2.2
+    dest: /tmp/cursor.deb
     mode: '0644'
+
+- name: Install Cursor
+  apt:
+    deb: /tmp/cursor.deb
+    state: present

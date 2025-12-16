@@ -8,6 +8,7 @@
 - name: Install UV tools
   command: >
     uv tool install {{ tool.name }}
+    {% if tool.python is defined %}--python {{ tool.python }}{% endif %}
     {% if tool.with is defined %}
     {% for w in tool.with %}--with {{ w }}{% endfor %}
     {% endif %}

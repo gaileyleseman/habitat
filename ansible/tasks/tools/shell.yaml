@@ -1,0 +1,38 @@
+---
+- name: Create user fonts directory
+  become: false
+  file:
+    path: "~/.local/share/fonts"
+    state: directory
+    mode: '0755'
+
+- name: Download MesloLGS NF fonts
+  become: false
+  get_url:
+    url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20{{ item | replace(' ', '%20') }}.ttf"
+    dest: "~/.local/share/fonts/MesloLGS NF {{ item }}.ttf"
+    mode: '0644'
+    force: false
+  loop:
+    - Regular
+    - Bold
+    - Italic
+    - Bold Italic
+  register: fonts_download
+
+- name: Update font cache
+  become: false
+  command: fc-cache -fv "~/.local/share/fonts"
+  when: fonts_download.changed
+
+- name: Install zoxide
+  become: false
+  shell: "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+  args:
+    creates: "~/.local/bin/zoxide"
+
+- name: Install Shell Tooling via UV
+  include_tasks: ../utils/uv-tool-install.yaml
+  vars:
+    tools:
+      - name: thefuck

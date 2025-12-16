@@ -1,4 +1,10 @@
 ---
+- name: Install Git Tools
+  include_tasks: "tools/git.yaml"
+
+- name: Install Shell Tools
+  include_tasks: "tools/shell.yaml"
+
 - name: Install Language Support
   include_tasks: "languages/{{ item }}.yaml"
   loop: "{{ language_support }}"
@@ -26,3 +32,10 @@
   when:
     - cloud is defined
     - cloud | length > 0
+
+- name: Install Development Tools
+  include_tasks: "tools/{{ item }}.yaml"
+  loop: "{{ tools }}"
+  when:
+    - tools is defined
+    - tools | length > 0
