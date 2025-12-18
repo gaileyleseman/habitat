@@ -17,5 +17,4 @@
   include_tasks: ../utils/uv-tool-install.yaml
   vars:
     tools:
-      - name: pre-commit
-        with: [pre-commit-uv]
+      - name: prek
