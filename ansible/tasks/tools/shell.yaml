@@ -8,16 +8,12 @@
 
 - name: Download MesloLGS NF fonts
   become: false
-  get_url:
-    url: "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20{{ item | replace(' ', '%20') }}.ttf"
-    dest: "~/.local/share/fonts/MesloLGS NF {{ item }}.ttf"
-    mode: '0644'
-    force: false
-  loop:
-    - Regular
-    - Bold
-    - Italic
-    - Bold Italic
+  ansible.builtin.shell: |
+    curl -fsSL -o ~/.local/share/fonts/MesloLGS\ NF\ {{ item | replace(' ', '\ ') }}.ttf \
+      "https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20{{ item | replace(' ', '%20') }}.ttf"
+  args:
+    creates: "~/.local/share/fonts/MesloLGS NF {{ item }}.ttf"
+  loop: [Regular, Bold, Italic, "Bold Italic"]
   register: fonts_download
 
 - name: Update font cache
