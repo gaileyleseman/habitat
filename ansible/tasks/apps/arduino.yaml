@@ -1,0 +1,92 @@
+---
+- name: Install Arduino tools
+  become: false
+  vars:
+    home: "{{ lookup('env', 'HOME') }}"
+  block:
+    - name: Create Arduino directories
+      ansible.builtin.file:
+        path: "{{ dir }}"
+        state: directory
+      loop:
+        - ~/.local/opt/arduino
+        - ~/.local/opt/arduino/applab
+        - ~/.local/opt/arduino/micropython-lab
+        - ~/.local/bin
+        - ~/.local/share/applications
+        - ~/.local/share/icons
+      loop_control:
+        loop_var: dir
+
+    - name: Install Arduino IDE AppImage
+      ansible.builtin.get_url:
+        url: https://downloads.arduino.cc/arduino-ide/arduino-ide_2.3.7_Linux_64bit.AppImage
+        dest: ~/.local/opt/arduino/arduino-ide.AppImage
+        mode: "0755"
+
+    - name: Create Arduino IDE wrapper
+      ansible.builtin.copy:
+        dest: ~/.local/bin/arduino-ide
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          exec ~/.local/opt/arduino/arduino-ide.AppImage --no-sandbox "$@"
+
+    - name: Download and extract Arduino App Lab
+      ansible.builtin.unarchive:
+        src: https://downloads.arduino.cc/AppLab/Stable/ArduinoAppLab_0.3.2_Linux_x86-64.tar.gz
+        dest: ~/.local/opt/arduino/applab
+        remote_src: true
+        extra_opts: [--strip-components=1]
+
+    - name: Download and extract Arduino CLI
+      ansible.builtin.unarchive:
+        src: https://downloads.arduino.cc/arduino-cli/arduino-cli_1.4.0_Linux_64bit.tar.gz
+        dest: ~/.local/bin
+        remote_src: true
+        include: [arduino-cli]
+
+    - name: Download and extract Arduino MicroPython Lab
+      ansible.builtin.unarchive:
+        src: https://github.com/arduino/lab-micropython-editor/releases/latest/download/Arduino.Lab.for.MicroPython-linux_x64.zip
+        dest: ~/.local/opt/arduino/micropython-lab
+        remote_src: true
+
+    - name: Create symlinks
+      ansible.builtin.file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+      loop:
+        - { src: ~/.local/opt/arduino/applab/arduino-app-lab, dest: ~/.local/bin/arduino-applab }
+        - { src: ~/.local/opt/arduino/micropython-lab/arduino-lab-micropython-ide, dest: ~/.local/bin/arduino-micropython }
+
+    - name: Download Arduino icon
+      ansible.builtin.get_url:
+        url: https://siminnovations.com/wiki/images/7/7a/Arduino_logo_round.png
+        dest: ~/.local/share/icons/arduino-ide.png
+        mode: "0644"
+
+    - name: Create desktop entries
+      ansible.builtin.copy:
+        dest: "~/.local/share/applications/{{ item.file }}"
+        mode: "0644"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name={{ item.name }}
+          Exec={{ home }}/.local/bin/{{ item.cmd }}
+          Icon={{ home }}/.local/share/icons/arduino-ide.png
+          Terminal=false
+          Categories=Development;IDE;Electronics;
+      loop:
+        - { file: arduino-ide.desktop, name: Arduino IDE, cmd: arduino-ide }
+        - { file: arduino-applab.desktop, name: Arduino App Lab, cmd: arduino-applab }
+        - { file: arduino-micropython.desktop, name: Arduino MicroPython Lab, cmd: "arduino-micropython --no-sandbox" }
+
+- name: Add user to dialout group
+  become: true
+  ansible.builtin.user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: dialout
+    append: true

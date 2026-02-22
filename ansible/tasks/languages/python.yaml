@@ -1,0 +1,7 @@
+---
+- name: Install Python Tooling via UV
+  include_tasks: "../utils/uv-tool-install.yaml"
+  vars:
+    tools:
+      - name: ruff
+      - name: ty

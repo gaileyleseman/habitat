@@ -1,0 +1,7 @@
+---
+- name: Install pixi using official script
+  shell: |
+    curl -fsSL https://pixi.sh/install.sh | sh
+  args:
+    creates: ~/.local/bin/pixi
+  become: no

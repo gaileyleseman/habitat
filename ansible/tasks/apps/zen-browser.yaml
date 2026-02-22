@@ -1,0 +1,26 @@
+---
+- name: Download and extract Zen Browser
+  unarchive:
+    src: https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-x86_64.tar.xz
+    dest: /opt
+    remote_src: yes
+    creates: /opt/zen/zen
+
+- name: Create zen command symlink
+  file:
+    src: /opt/zen/zen
+    dest: /usr/local/bin/zen
+    state: link
+
+- name: Create desktop entry
+  copy:
+    dest: /usr/share/applications/zen-browser.desktop
+    content: |
+      [Desktop Entry]
+      Name=Zen Browser
+      Exec=zen %u
+      Icon=/opt/zen/browser/chrome/icons/default/default128.png
+      Type=Application
+      Categories=Network;WebBrowser;
+      MimeType=text/html;x-scheme-handler/http;x-scheme-handler/https;
+    mode: '0644'

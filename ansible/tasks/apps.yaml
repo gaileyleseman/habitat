@@ -1,0 +1,33 @@
+- name: Install Productivity Apps
+  include_tasks: "apps/{{ item }}.yaml"
+  loop: "{{ productivity }}"
+  when: 
+    - productivity is defined
+    - productivity | length > 0
+  tags: [productivity]
+
+- name: Install Entertainment Apps
+  include_tasks: "apps/{{ item }}.yaml"
+  loop: "{{ entertainment }}"
+  when: 
+    - entertainment is defined
+    - entertainment | length > 0
+  tags: [entertainment]
+
+
+- name: Install Creative Apps
+  include_tasks: "apps/{{ item }}.yaml"
+  loop: "{{ creative }}"
+  when: 
+    - creative is defined
+    - creative | length > 0
+  tags: [creative]
+
+- name: Install Communication Apps
+  include_tasks: "apps/{{ item }}.yaml"
+  loop: "{{ communication }}"
+  when: 
+    - communication is defined
+    - communication | length > 0
+  tags: [communication]
+

@@ -1,0 +1,5 @@
+- name: Install Rust via rustup
+  shell: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+  args:
+    creates: ~/.cargo/bin/rustup
+  become: false
