@@ -26,8 +26,6 @@
     - name: Install Apps
       include_tasks: ../tasks/apps.yaml
 
-    #TODO: zsh + plugin manager
-    #TODO: dotfiles + gnu stow
     #TODO: folder structure
     #TODO: clone repositories to get started??
     #TODO: name: Install Drivers

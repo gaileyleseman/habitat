@@ -1,39 +1,15 @@
----
-- name: Create user fonts directory
-  become: false
-  file:
-    path: "~/.local/share/fonts"
-    state: directory
-    mode: '0755'
-
-- name: Download MesloLGS NF fonts
-  become: false
-  ansible.builtin.shell: |
-    curl -fsSL -o ~/.local/share/fonts/MesloLGS\ NF\ {{ item | replace(' ', '\ ') }}.ttf \
-      "https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20{{ item | replace(' ', '%20') }}.ttf"
-  args:
-    creates: "~/.local/share/fonts/MesloLGS NF {{ item }}.ttf"
-  loop: [Regular, Bold, Italic, "Bold Italic"]
-  register: fonts_download
-
-- name: Update font cache
-  become: false
-  command: fc-cache -fv "~/.local/share/fonts"
-  when: fonts_download.changed
-
-- name: Install zoxide
-  become: false
-  shell: "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
-  args:
-    creates: "~/.local/bin/zoxide"
-
-- name: Install pay-respects
-  become: false
-  shell: "curl -sSfL https://raw.githubusercontent.com/iffse/pay-respects/main/install.sh | sh"
-  args:
-    creates: "~/.local/bin/pay-respects"
-
 - name: Install chezmoi
-  shell: sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply gaileyleseman
+  shell: sh -c "$(curl -fsLS get.chezmoi.io/lb)"
   args:
-    creates: ~/.local/share/chezmoi
+    creates: ~/.local/bin/chezmoi
+  become: false
+
+- name: Initialize chezmoi
+  shell: chezmoi init gaileyleseman
+  args:
+    creates: ~/.local/share/chezmoi/.git
+  become: false
+
+# - name: Apply chezmoi
+#   shell: chezmoi apply
+#   become: false

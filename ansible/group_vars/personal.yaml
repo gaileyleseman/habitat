@@ -1,8 +1,12 @@
 ---
-productivity: [obsidian, bitwarden, zen-browser]
+extra_apt_packages: [terminator]
+
+productivity: [obsidian, bitwarden]
 creative: [obs]
+entertainment: [spotify]
+
 
 language_support: [python, cpp, javascript, rust]
-ides: [vscode, zed, cursor, antigravity, arduino]
-tools: [llm]
-
+ides: [vscode, zed, arduino]
+tools: [uv, pixi, llm]
+containerization: [docker, k8s]
