@@ -1,0 +1,9 @@
+---
+- name: Install C/C++ toolchain
+  apt:
+    name:
+      - clang
+      - cmake
+      - gdb
+    state: present
+  become: yes

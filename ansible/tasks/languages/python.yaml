@@ -1,5 +1,11 @@
 ---
-- name: Install Python Tooling via UV
+- name: Install a managed CPython via uv
+  command: uv python install
+  register: uv_python
+  changed_when: "'Installed' in uv_python.stderr"
+  become: false
+
+- name: Install Python tooling via uv
   include_tasks: "../utils/uv-tool-install.yaml"
   vars:
     tools:

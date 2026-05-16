@@ -1,0 +1,41 @@
+---
+- name: Provision machine
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Show configuration for this machine
+      debug:
+        msg: |
+          Machine: {{ inventory_hostname }}
+          Groups: {{ group_names }}
+          Architecture: {{ ansible_architecture }}
+          IDEs: {{ ides | default([]) }}
+          Languages: {{ language_support | default([]) }}
+          Tools: {{ tools | default([]) }}
+          SSH server: {{ install_ssh_server | default(false) }}
+          Dotfiles: {{ install_dotfiles | default(false) }}
+      tags: always
+
+  tasks:
+    - name: Install base packages
+      include_tasks:
+        file: tasks/base.yaml
+        apply:
+          tags: [base]
+      tags: [base]
+
+    - name: Install developer tools
+      include_tasks:
+        file: tasks/dev.yaml
+        apply:
+          tags: [dev]
+      tags: [dev]
+
+    - name: Apply dotfiles
+      include_tasks:
+        file: tasks/dotfiles.yaml
+        apply:
+          tags: [dotfiles]
+      when: install_dotfiles | default(false)
+      tags: [dotfiles]

@@ -1,21 +1,16 @@
 ---
-- name: Install NVM
-  shell: |
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+- name: Install fnm
+  shell: curl -fsSL https://fnm.vercel.app/install | bash
   args:
     executable: /bin/bash
-    chdir: "{{ ansible_env.HOME }}"
-    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+    creates: "{{ ansible_env.HOME }}/.local/share/fnm/fnm"
+  become: false
 
-- name: Ensure NVM is sourced in profile
-  lineinfile:
-    path: "{{ ansible_env.HOME }}/.profile"
-    line: 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
-    create: yes
-
-- name: Install latest Node.js and set default via NVM
+- name: Install latest LTS Node.js via fnm
   shell: |
-    bash -lc "nvm install node && nvm alias default && node install-latest-npm"
+    eval "$("{{ ansible_env.HOME }}/.local/share/fnm/fnm" env)"
+    fnm install --lts
   args:
     executable: /bin/bash
-    creates: "{{ ansible_env.HOME }}/.nvm/versions/node"
+    creates: "{{ ansible_env.HOME }}/.local/share/fnm/node-versions"
+  become: false

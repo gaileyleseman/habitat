@@ -1,6 +1,6 @@
 ---
 extra_apt_packages: []
 
-ides: [vscode]
+ides: []
 language_support: []
 tools: []

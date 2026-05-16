@@ -3,13 +3,3 @@
   args:
     creates: ~/.local/bin/chezmoi
   become: false
-
-- name: Initialize chezmoi
-  shell: chezmoi init gaileyleseman
-  args:
-    creates: ~/.local/share/chezmoi/.git
-  become: false
-
-# - name: Apply chezmoi
-#   shell: chezmoi apply
-#   become: false
