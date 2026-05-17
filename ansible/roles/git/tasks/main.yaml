@@ -1,0 +1,24 @@
+---
+- name: Install the GitHub CLI from its official apt repo
+  ansible.builtin.shell: |
+    set -o pipefail
+    mkdir -p -m 755 /etc/apt/keyrings
+    out="$(mktemp)"
+    wget -nv -O"$out" https://cli.github.com/packages/githubcli-archive-keyring.gpg
+    tee /etc/apt/keyrings/githubcli-archive-keyring.gpg < "$out" > /dev/null
+    chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+      | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    apt update
+    apt install gh -y
+  args:
+    creates: /usr/bin/gh
+    executable: /bin/bash
+
+- name: Install Git tooling via uv
+  ansible.builtin.include_role:
+    name: uv
+    tasks_from: install_tools
+  vars:
+    uv_tools:
+      - name: prek

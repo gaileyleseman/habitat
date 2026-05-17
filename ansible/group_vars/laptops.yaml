@@ -1,7 +1,8 @@
 ---
-extra_apt_packages: [terminator]
-
-ides: [vscode]
-productivity: [obsidian]
-entertainment: [spotify]
-containerization: [docker, k8s]
+# Laptop / desktop profile. Edit this list to change what a laptop installs.
+# Each value names a role under ansible/roles/.
+components:
+  - vscode      # IDE
+  - python      # language toolchain
+  - docker      # tool
+  - claude      # AI CLI

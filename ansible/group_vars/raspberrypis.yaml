@@ -1,0 +1,4 @@
+---
+# Raspberry Pi profile. Edit this list to change what a Pi installs.
+# Each value names a role under ansible/roles/.
+components: []

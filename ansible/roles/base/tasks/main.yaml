@@ -1,0 +1,26 @@
+---
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+  when: base_packages | length > 0
+
+- name: Install extra apt packages
+  ansible.builtin.apt:
+    name: "{{ base_extra_apt_packages }}"
+    state: present
+    update_cache: true
+  when: base_extra_apt_packages | length > 0
+
+- name: Install OpenSSH server
+  ansible.builtin.apt:
+    name: openssh-server
+    state: present
+  notify: Restart ssh
+
+- name: Enable and start the SSH service
+  ansible.builtin.service:
+    name: ssh
+    enabled: true
+    state: started

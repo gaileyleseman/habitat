@@ -1,0 +1,15 @@
+---
+- name: Install a managed CPython via uv
+  ansible.builtin.command: uv python install
+  register: python_install
+  changed_when: "'Installed' in python_install.stderr"
+  become: false
+
+- name: Install Python tooling via uv
+  ansible.builtin.include_role:
+    name: uv
+    tasks_from: install_tools
+  vars:
+    uv_tools:
+      - name: ruff
+      - name: ty

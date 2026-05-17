@@ -1,0 +1,15 @@
+---
+- name: Install uv using the official script
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    creates: ~/.local/bin/uv
+    executable: /bin/bash
+  become: false
+
+- name: Update uv to the latest version
+  ansible.builtin.command: uv self update
+  register: uv_update
+  changed_when: "'Upgraded' in uv_update.stderr"
+  become: false

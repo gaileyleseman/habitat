@@ -1,0 +1,19 @@
+---
+- name: Install fnm
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://fnm.vercel.app/install | bash
+  args:
+    creates: ~/.local/share/fnm/fnm
+    executable: /bin/bash
+  become: false
+
+- name: Install the latest LTS Node.js via fnm
+  ansible.builtin.shell: |
+    FNM="$HOME/.local/share/fnm/fnm"
+    eval "$("$FNM" env)"
+    "$FNM" install --lts
+  args:
+    creates: ~/.local/share/fnm/node-versions
+    executable: /bin/bash
+  become: false

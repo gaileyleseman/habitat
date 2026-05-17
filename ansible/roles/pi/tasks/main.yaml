@@ -1,0 +1,26 @@
+---
+# pi.dev's installer resolves its install path via npm, so the javascript
+# role (fnm + Node LTS) is declared as a dependency in meta/main.yaml.
+- name: Check whether pi is installed
+  ansible.builtin.shell: |
+    eval "$("$HOME/.local/share/fnm/fnm" env)"
+    fnm use --lts >/dev/null
+    command -v pi
+  args:
+    executable: /bin/bash
+  register: pi_bin
+  changed_when: false
+  failed_when: false
+  become: false
+
+- name: Install pi (pi.dev agent harness)
+  ansible.builtin.shell: |
+    set -o pipefail
+    eval "$("$HOME/.local/share/fnm/fnm" env)"
+    fnm use --lts
+    curl -fsSL https://pi.dev/install.sh | sh
+  args:
+    executable: /bin/bash
+  changed_when: true
+  when: pi_bin.rc != 0
+  become: false

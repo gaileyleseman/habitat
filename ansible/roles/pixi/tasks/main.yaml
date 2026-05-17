@@ -1,0 +1,9 @@
+---
+- name: Install pixi using the official script
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://pixi.sh/install.sh | sh
+  args:
+    creates: ~/.pixi/bin/pixi
+    executable: /bin/bash
+  become: false

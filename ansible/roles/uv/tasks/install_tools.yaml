@@ -1,0 +1,22 @@
+---
+# Reusable: installs a list of Python CLIs via `uv tool install`.
+# Call with `include_role: { name: uv, tasks_from: install_tools }` and pass
+# `uv_tools` as a list of objects: { name, python (optional), with (optional) }.
+- name: Check which uv tools are already installed
+  ansible.builtin.command: uv tool list
+  register: uv_installed_tools
+  changed_when: false
+  become: false
+
+- name: Install uv tools
+  ansible.builtin.command: >-
+    uv tool install {{ tool.name }}
+    {% if tool.python is defined %}--python {{ tool.python }}{% endif %}
+    {% if tool.with is defined %}{% for w in tool.with %}--with {{ w }} {% endfor %}{% endif %}
+  loop: "{{ uv_tools }}"
+  loop_control:
+    loop_var: tool
+  when: tool.name not in uv_installed_tools.stdout
+  register: uv_tool_install
+  changed_when: uv_tool_install.rc == 0
+  become: false

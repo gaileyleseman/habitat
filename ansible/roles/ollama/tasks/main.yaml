@@ -1,0 +1,8 @@
+---
+- name: Install Ollama
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://ollama.com/install.sh | sh
+  args:
+    creates: /usr/local/bin/ollama
+    executable: /bin/bash

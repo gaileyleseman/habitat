@@ -1,0 +1,20 @@
+---
+- name: Install Docker using the convenience script
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://get.docker.com | sh
+  args:
+    creates: /usr/bin/docker
+    executable: /bin/bash
+
+- name: Add the current user to the docker group
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    groups: docker
+    append: true
+
+- name: Enable and start the Docker service
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+    enabled: true

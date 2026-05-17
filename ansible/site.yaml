@@ -1,0 +1,31 @@
+---
+- name: Provision machine
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Show configuration for this machine
+      ansible.builtin.debug:
+        msg: |
+          Machine: {{ inventory_hostname }}
+          Groups: {{ group_names }}
+          Architecture: {{ ansible_facts['architecture'] }}
+          Components: {{ components }}
+      tags: always
+
+  roles:
+    - role: base
+      tags: base
+    - role: git
+      tags: base
+    - role: shell
+      tags: base
+
+  tasks:
+    - name: Apply selected component roles
+      ansible.builtin.include_role:
+        name: "{{ item }}"
+        apply:
+          tags: dev
+      loop: "{{ components }}"
+      tags: dev
