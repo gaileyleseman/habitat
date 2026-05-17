@@ -1,0 +1,19 @@
+---
+- name: Check if VS Code is installed
+  ansible.builtin.stat:
+    path: /usr/bin/code
+  register: vscode_bin
+
+- name: Pre-seed VS Code to register the Microsoft apt repo
+  ansible.builtin.debconf:
+    name: code
+    question: code/add-microsoft-repo
+    value: "true"
+    vtype: boolean
+  when: not vscode_bin.stat.exists
+
+- name: Download and install VS Code
+  ansible.builtin.apt:
+    deb: https://go.microsoft.com/fwlink/?LinkID=760868
+    state: present
+  when: not vscode_bin.stat.exists

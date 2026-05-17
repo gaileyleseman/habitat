@@ -1,0 +1,4 @@
+---
+# Maps the host CPU architecture to the release-asset naming used by
+# minikube and kubectl, so the role works on both laptops and ARM Pis.
+k8s_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"

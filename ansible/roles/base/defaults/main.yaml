@@ -1,0 +1,22 @@
+---
+base_packages:
+  # Core system packages
+  - ca-certificates
+  - gnupg
+  - lsb-release
+
+  # Essential tools
+  - curl
+  - wget
+  - git
+  - unzip
+  - zip
+
+  # Build tools
+  - build-essential
+  - software-properties-common
+
+  # Python headers for building C extensions
+  - python3-dev
+
+base_extra_apt_packages: []

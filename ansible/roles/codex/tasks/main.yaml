@@ -1,0 +1,25 @@
+---
+# Codex CLI is distributed via npm, so the javascript role (fnm + Node LTS)
+# is declared as a dependency in meta/main.yaml.
+- name: Check whether the Codex CLI is installed
+  ansible.builtin.shell: |
+    eval "$("$HOME/.local/share/fnm/fnm" env)"
+    fnm use --lts >/dev/null
+    command -v codex
+  args:
+    executable: /bin/bash
+  register: codex_bin
+  changed_when: false
+  failed_when: false
+  become: false
+
+- name: Install the Codex CLI via npm
+  ansible.builtin.shell: |
+    eval "$("$HOME/.local/share/fnm/fnm" env)"
+    fnm use --lts
+    npm install -g @openai/codex
+  args:
+    executable: /bin/bash
+  changed_when: true
+  when: codex_bin.rc != 0
+  become: false

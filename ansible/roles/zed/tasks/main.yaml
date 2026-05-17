@@ -1,0 +1,16 @@
+---
+- name: Check if Zed is installed
+  ansible.builtin.stat:
+    path: ~/.local/bin/zed
+  register: zed_bin
+  become: false
+
+- name: Install Zed
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -f https://zed.dev/install.sh | sh
+  args:
+    executable: /bin/bash
+  changed_when: true
+  when: not zed_bin.stat.exists
+  become: false

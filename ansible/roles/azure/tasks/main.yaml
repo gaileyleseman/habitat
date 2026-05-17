@@ -1,0 +1,21 @@
+---
+- name: Check if the Azure CLI is installed
+  ansible.builtin.command: command -v az
+  register: azure_cli
+  changed_when: false
+  failed_when: false
+
+- name: Install the Azure CLI using the official script
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+  args:
+    executable: /bin/bash
+  changed_when: true
+  when: azure_cli.rc != 0
+
+- name: Install Azure Storage Explorer via snap
+  community.general.snap:
+    name: storage-explorer
+    state: present
+  when: ansible_facts['architecture'] == 'x86_64'

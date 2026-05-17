@@ -1,6 +1,0 @@
----
-- name: Initialize and apply dotfiles via chezmoi
-  shell: chezmoi init --apply gaileyleseman
-  args:
-    creates: ~/.local/share/chezmoi/.git
-  become: false

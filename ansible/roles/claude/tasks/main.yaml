@@ -1,0 +1,9 @@
+---
+- name: Install Claude Code
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://claude.ai/install.sh | bash
+  args:
+    creates: ~/.local/bin/claude
+    executable: /bin/bash
+  become: false

@@ -1,53 +1,61 @@
 # Habitat
 
 Provisions an Ubuntu laptop (or Raspberry Pi) from a fresh install using Ansible.
-Dotfiles are managed separately by [chezmoi](https://chezmoi.io) and are not stored
-in this repo.
 
 ## Quick start
 
-From a fresh install:
-
 ```bash
 sudo apt update && sudo apt install -y git
-git clone https://github.com/gaileyleseman/habitat.git
+git clone --recurse-submodules https://github.com/gaileyleseman/habitat.git
 cd habitat
 ./setup.sh
 ```
 
-`setup.sh` installs the prerequisites (`git`, `ansible`, `whiptail`), then opens an
-interactive `whiptail` picker to choose the machine type and which components to
-install (IDEs, language toolchains, tools, SSH server, dotfiles). It writes the
-selection to `ansible/inventory` and `ansible/host_vars/localhost.yml` (both
-gitignored) and runs the playbook.
+`setup.sh` installs the prerequisites, detects the machine type (asking you to
+confirm), then asks whether to use the default component profile or pick
+components interactively. It installs the Ansible collections and runs the
+playbook. It does not apply dotfiles.
 
-## Manual runs
+## What gets installed
 
-The playbook must be run from inside `ansible/` so `ansible.cfg` and the inventory
-resolve:
+`setup.sh` asks whether to use the default profile for the machine type. Accept
+it and the committed `group_vars` profile is used as-is. Decline and a `whiptail`
+picker opens, listing every available component (each names a role under
+`ansible/roles/`); your selection is written to the gitignored
+`ansible/host_vars/localhost.yaml`.
+
+The picker is **pre-ticked** from the current selection: a previous
+`host_vars/localhost.yaml` if one exists, otherwise the committed machine-type
+profile. Edit those profiles to change the defaults a fresh machine starts from:
+
+```yaml
+# ansible/group_vars/laptops.yaml
+components:
+  - vscode      # IDE
+  - python      # language toolchain
+  - docker      # tool
+  - claude      # AI CLI
+```
+
+## Re-running the playbook
+
+After `setup.sh` has run once (it generates `ansible/inventory`), re-apply
+changes — e.g. after editing a component profile — without re-running setup:
 
 ```bash
 cd ansible
 ansible-playbook site.yaml -K
 ```
 
-Useful flags:
-
-- `--check` — dry run; report changes without applying them.
-- `--tags base|dev|dotfiles` — run only part of the playbook.
-- `--syntax-check` — validate the playbook.
-
-## Layout
-
-- `ansible/site.yaml` — top-level playbook (`base` → `dev` → `dotfiles`).
-- `ansible/tasks/` — `base.yaml`, `dev.yaml`, `dotfiles.yaml`, plus `apps/`,
-  `languages/`, `tools/`.
-- `ansible/group_vars/` — defaults per group (`all`, `laptops`, `raspberrypis`).
-- `ansible/host_vars/localhost.yml` — per-machine selections (generated).
-- `ansible/inventory.example` — inventory template.
+Flags: `--check` (dry run), `--tags base|dev` (run part), `--syntax-check`.
 
 ## Dotfiles
 
-The `dotfiles` component runs `chezmoi init --apply gaileyleseman`, pulling
-dotfiles from the separate chezmoi repo. Shell environment and `PATH` entries for
-the tools installed here (rustup, fnm, uv, etc.) live in that dotfiles repo.
+Dotfiles live in the [`gaileyleseman/dotfiles`](https://github.com/gaileyleseman/dotfiles)
+chezmoi repo, vendored here as the `dotfiles` submodule. Apply them after
+provisioning (the playbook installs the `chezmoi` binary but does not run it):
+
+```bash
+git submodule update --init           # skip if cloned with --recurse-submodules
+chezmoi init --apply --source dotfiles
+```

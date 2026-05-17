@@ -1,29 +1,7 @@
 ---
-base_packages:
-  # Core system packages
-  - ca-certificates
-  - gnupg
-  - lsb-release
-
-  # Essential tools
-  - curl
-  - wget
-  - git
-  - unzip
-  - zip
-
-  # Build tools
-  - build-essential
-  - software-properties-common
-
-  # Python headers for building C extensions
-  - python3-dev
-
-extra_apt_packages: []
-
-language_support: []
-ides: []
-tools: []
-
-install_ssh_server: false
-install_dotfiles: false
+# `components` lists the optional roles to apply; each value names a role
+# under roles/. The `git` and `shell` roles are always applied.
+# Per-machine-type profiles live in group_vars/laptops.yaml and
+# group_vars/raspberrypis.yaml; base_packages / base_extra_apt_packages
+# default in roles/base/defaults/main.yaml.
+components: []

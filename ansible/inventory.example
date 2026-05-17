@@ -1,8 +1,4 @@
 # Copy to `inventory` (setup.sh generates this automatically).
-# localhost belongs to exactly one machine group.
-localhost ansible_connection=local
-
+# localhost belongs to exactly one machine group: [laptops] or [raspberrypis].
 [laptops]
-localhost
-
-[raspberrypis]
+localhost ansible_connection=local

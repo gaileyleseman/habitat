@@ -1,6 +1,4 @@
 ---
-extra_apt_packages: []
-
-ides: []
-language_support: []
-tools: []
+# Raspberry Pi profile. Edit this list to change what a Pi installs.
+# Each value names a role under ansible/roles/.
+components: []

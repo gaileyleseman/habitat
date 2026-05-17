@@ -1,0 +1,8 @@
+---
+- name: Install the C/C++ toolchain
+  ansible.builtin.apt:
+    name:
+      - clang
+      - cmake
+      - gdb
+    state: present

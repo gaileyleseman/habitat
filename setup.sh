@@ -1,121 +1,86 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ANSIBLE_DIR="$REPO_DIR/ansible"
-
+# Run from ansible/ so ansible.cfg and the inventory resolve.
+cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ansible"
 echo "==> Habitat setup"
 
-# --- 1. Prerequisites -------------------------------------------------------
-apt_updated=false
-apt_update_once() {
-  if [ "$apt_updated" = false ]; then
-    sudo apt update
-    apt_updated=true
-  fi
-}
-
-ensure_pkg() {
-  local pkg="$1" bin="$2"
-  if ! command -v "$bin" >/dev/null 2>&1; then
-    echo "--> Installing $pkg"
-    apt_update_once
-    sudo apt install -y "$pkg"
-  fi
-}
-
-ensure_pkg git git
-ensure_pkg whiptail whiptail
-
-if ! command -v ansible-playbook >/dev/null 2>&1; then
-  echo "--> Installing Ansible"
-  apt_update_once
-  sudo apt install -y software-properties-common
-  sudo add-apt-repository --yes --update ppa:ansible/ansible
-  sudo apt install -y ansible
+# Prerequisites.
+missing=()
+command -v git >/dev/null || missing+=(git)
+command -v ansible-playbook >/dev/null || missing+=(ansible)
+command -v whiptail >/dev/null || missing+=(whiptail)
+if (( ${#missing[@]} )); then
+  sudo apt update
+  sudo apt install -y "${missing[@]}"
 fi
 
-# --- 2. Interactive selection ----------------------------------------------
-cancelled() { echo "Cancelled."; exit 1; }
-
-MACHINE=$(whiptail --title "Habitat" --menu "Select machine type:" 12 60 2 \
-  "laptops" "Ubuntu laptop / desktop" \
-  "raspberrypis" "Raspberry Pi (ARM)" \
-  3>&1 1>&2 2>&3) || cancelled
-
-IDES=$(whiptail --title "IDEs" --checklist "Select IDEs to install:" 11 60 2 \
-  "vscode" "Visual Studio Code" ON \
-  "zed" "Zed editor" OFF \
-  3>&1 1>&2 2>&3) || cancelled
-
-LANGS=$(whiptail --title "Languages" --checklist "Select language toolchains:" 13 60 4 \
-  "python" "Python (uv, ruff, ty)" ON \
-  "rust" "Rust (rustup)" OFF \
-  "javascript" "Node.js (fnm)" OFF \
-  "cpp" "C/C++ (clang, cmake, gdb)" OFF \
-  3>&1 1>&2 2>&3) || cancelled
-
-TOOLS=$(whiptail --title "Tools" --checklist "Select tools:" 14 60 5 \
-  "docker" "Docker" OFF \
-  "k8s" "Kubernetes tooling" OFF \
-  "azure" "Azure CLI" OFF \
-  "llm" "llm CLI" OFF \
-  "pixi" "pixi" OFF \
-  3>&1 1>&2 2>&3) || cancelled
-
-EXTRAS=$(whiptail --title "Extras" --checklist "Optional extras:" 11 60 2 \
-  "ssh" "Install and enable OpenSSH server" OFF \
-  "dotfiles" "Apply dotfiles via chezmoi" ON \
-  3>&1 1>&2 2>&3) || cancelled
-
-# --- 3. Render selections ---------------------------------------------------
-# whiptail emits selected tags as quoted, space-separated values.
-to_yaml_list() {
-  local cleaned
-  cleaned=$(echo "$1" | tr -d '"' | xargs || true)
-  if [ -z "$cleaned" ]; then
-    echo "[]"
-  else
-    echo "[$(echo "$cleaned" | sed 's/ /, /g')]"
-  fi
-}
-
-extras=" $(echo "$EXTRAS" | tr -d '"') "
-case "$extras" in *" ssh "*) SSH=true;; *) SSH=false;; esac
-case "$extras" in *" dotfiles "*) DOTFILES=true;; *) DOTFILES=false;; esac
-
-LAPTOP_HOST=""
-RPI_HOST=""
-if [ "$MACHINE" = "laptops" ]; then
-  LAPTOP_HOST="localhost"
-else
-  RPI_HOST="localhost"
+# Machine type — sets the inventory group.
+case "$(uname -m)" in
+  aarch64 | armv7l | armv6l) machine=raspberrypis ;;
+  *) machine=laptops ;;
+esac
+read -rp "Detected machine type: $machine. Correct? [Y/n] " reply
+if [[ ${reply,,} == n* ]]; then
+  machine=$([[ $machine == laptops ]] && echo raspberrypis || echo laptops)
 fi
+echo "--> Provisioning as: $machine"
 
-cat > "$ANSIBLE_DIR/inventory" <<EOF
-localhost ansible_connection=local
-
-[laptops]
-$LAPTOP_HOST
-
-[raspberrypis]
-$RPI_HOST
+# Inventory. Ansible's become handshake is incompatible with sudo-rs (the Rust
+# sudo that is default on Ubuntu 26.04+); point it at the classic sudo if found.
+become_exe=""
+if sudo --version 2>/dev/null | grep -qi sudo-rs && [ -x /usr/bin/sudo.ws ]; then
+  echo "--> Detected sudo-rs; using /usr/bin/sudo.ws for privilege escalation"
+  become_exe=" ansible_become_exe=/usr/bin/sudo.ws"
+fi
+cat > inventory <<EOF
+[$machine]
+localhost ansible_connection=local${become_exe}
 EOF
 
-mkdir -p "$ANSIBLE_DIR/host_vars"
-cat > "$ANSIBLE_DIR/host_vars/localhost.yml" <<EOF
+# Components: use the committed group_vars profile, or pick per-machine.
+read -rp "Use the default $machine component profile? [Y/n] " reply
+if [[ ${reply,,} == n* ]]; then
+  # Picker. Items are discovered from roles/ (minus the always-applied
+  # base/uv/git/shell); boxes are pre-ticked from the currently resolved
+  # selection (host_vars override if present, else the group_vars profile).
+  current=" $(ansible-inventory --host localhost 2>/dev/null \
+    | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin).get("components") or []))' \
+    2>/dev/null || true) "
+
+  items=()
+  for dir in roles/*/; do
+    role=$(basename "$dir")
+    case $role in base | uv | git | shell) continue ;; esac
+    [[ $current == *" $role "* ]] && state=ON || state=OFF
+    items+=("$role" "" "$state")
+  done
+
+  list_h=$(( ${#items[@]} / 3 ))
+  (( list_h > 12 )) && list_h=12
+  selected=$(whiptail --title "Habitat — components" \
+    --checklist "Select components to install (space toggles, Enter confirms):" \
+    $(( list_h + 8 )) 60 "$list_h" \
+    "${items[@]}" 3>&1 1>&2 2>&3) || { echo "Cancelled."; exit 1; }
+
+  # whiptail emits selected tags space-separated and quoted; render a YAML list.
+  components=$(echo "$selected" | tr -d '"' | xargs)
+  components="[${components// /, }]"
+  echo "--> Components: $components"
+
+  # Per-machine selection — overrides the group_vars profile.
+  mkdir -p host_vars
+  cat > host_vars/localhost.yaml <<EOF
 ---
-ides: $(to_yaml_list "$IDES")
-language_support: $(to_yaml_list "$LANGS")
-tools: $(to_yaml_list "$TOOLS")
-
-install_ssh_server: $SSH
-install_dotfiles: $DOTFILES
+# Generated by setup.sh — per-machine component selection.
+components: $components
 EOF
+else
+  # Clear any stale per-machine override so the group_vars profile applies.
+  echo "--> Using the default $machine profile"
+  rm -f host_vars/localhost.yaml
+fi
 
-echo "--> Wrote ansible/inventory and ansible/host_vars/localhost.yml"
-
-# --- 4. Run the playbook ----------------------------------------------------
-echo "==> Running Ansible playbook"
-cd "$ANSIBLE_DIR"
+# Provision.
+ansible-galaxy collection install -r requirements.yml
 ansible-playbook site.yaml -K

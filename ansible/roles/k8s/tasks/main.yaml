@@ -1,0 +1,29 @@
+---
+- name: Install Minikube
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-{{ k8s_arch }}
+    install /tmp/minikube /usr/local/bin/minikube
+    rm -f /tmp/minikube
+  args:
+    creates: /usr/local/bin/minikube
+    executable: /bin/bash
+
+- name: Install kubectl
+  ansible.builtin.shell: |
+    set -o pipefail
+    ver="$(curl -L -s https://dl.k8s.io/release/stable.txt)"
+    curl -Lo /tmp/kubectl "https://dl.k8s.io/release/${ver}/bin/linux/{{ k8s_arch }}/kubectl"
+    install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+    rm -f /tmp/kubectl
+  args:
+    creates: /usr/local/bin/kubectl
+    executable: /bin/bash
+
+- name: Install Helm
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  args:
+    creates: /usr/local/bin/helm
+    executable: /bin/bash

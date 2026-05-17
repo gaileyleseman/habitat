@@ -1,9 +1,0 @@
----
-- name: Check if Zed exists
-  stat:
-    path: "{{ ansible_env.HOME }}/.local/bin/zed"
-  register: zed_exists
-
-- name: Install Zed
-  shell: curl -f https://zed.dev/install.sh | sh
-  when: not zed_exists.stat.exists

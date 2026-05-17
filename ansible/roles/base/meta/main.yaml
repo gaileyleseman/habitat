@@ -1,0 +1,4 @@
+---
+# uv is part of the base toolchain on every machine.
+dependencies:
+  - role: uv
