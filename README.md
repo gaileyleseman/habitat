@@ -52,10 +52,10 @@ Flags: `--check` (dry run), `--tags base|dev` (run part), `--syntax-check`.
 ## Dotfiles
 
 Dotfiles live in the [`gaileyleseman/dotfiles`](https://github.com/gaileyleseman/dotfiles)
-chezmoi repo, vendored here as the `dotfiles` submodule. Apply them after
-provisioning (the playbook installs the `chezmoi` binary but does not run it):
+chezmoi repo and are managed separately — the playbook does not install `chezmoi`
+or apply dotfiles. Install `chezmoi` and apply them after provisioning:
 
 ```bash
-git submodule update --init           # skip if cloned with --recurse-submodules
-chezmoi init --apply --source dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply gaileyleseman
+chsh -s $(which zsh)
 ```

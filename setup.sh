@@ -42,7 +42,7 @@ EOF
 read -rp "Use the default $machine component profile? [Y/n] " reply
 if [[ ${reply,,} == n* ]]; then
   # Picker. Items are discovered from roles/ (minus the always-applied
-  # base/uv/git/shell); boxes are pre-ticked from the currently resolved
+  # base/uv/git); boxes are pre-ticked from the currently resolved
   # selection (host_vars override if present, else the group_vars profile).
   current=" $(ansible-inventory --host localhost 2>/dev/null \
     | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin).get("components") or []))' \
@@ -51,7 +51,7 @@ if [[ ${reply,,} == n* ]]; then
   items=()
   for dir in roles/*/; do
     role=$(basename "$dir")
-    case $role in base | uv | git | shell) continue ;; esac
+    case $role in base | uv | git) continue ;; esac
     [[ $current == *" $role "* ]] && state=ON || state=OFF
     items+=("$role" "" "$state")
   done

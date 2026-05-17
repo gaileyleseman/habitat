@@ -18,8 +18,6 @@
       tags: base
     - role: git
       tags: base
-    - role: shell
-      tags: base
 
   tasks:
     - name: Apply selected component roles

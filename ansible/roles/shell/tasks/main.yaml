@@ -1,9 +1,0 @@
----
-- name: Install chezmoi
-  ansible.builtin.shell: |
-    set -o pipefail
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
-  args:
-    creates: ~/.local/bin/chezmoi
-    executable: /bin/bash
-  become: false
